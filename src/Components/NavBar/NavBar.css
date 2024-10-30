@@ -1,0 +1,32 @@
+nav{
+  font-family: "Source Sans Pro-SemiBold";
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100px;
+
+  
+  background: var(--Main-green,#00818D);
+  box-shadow: 0px 10px 30px 0px rgba(0, 129, 141, 0.30);
+  position: relative;
+}
+nav ul {
+  display: inline-flex;
+  list-style: none;
+  align-items: center;
+  gap: 70px;
+  margin-left: auto;
+  
+}
+nav ul li {
+  color:#fff;
+  font-size:16px;
+}
+.navbar-logo{
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+margin-right:20px ;
+margin-left: 90px;
+}
