@@ -5,13 +5,9 @@ import { useState } from "react";
 import { Modal } from "../Modal/Modal";
 import { useNavigate } from "react-router-dom";
 const SignUp = () => {
-  const navigate = useNavigate();
-  const handleUserLoginClick = () => {
-    navigate("/modal");
-  };
   return (
     <div className="btn-container">
-      <button className="user-btn" onClick={handleUserLoginClick}>
+      <button className="user-btn">
         <span>ورود کابران</span>
       </button>
       <button className="provider-btn">

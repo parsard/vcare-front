@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import person from "../../Assets/person.png";
 import "./Modal.css";
 export const Modal = () => {
-  const [phone, setPhone] = useState("");
   return (
     <div className="modal-overlay visible">
       <div className="modal-container">

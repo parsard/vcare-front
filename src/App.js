@@ -5,12 +5,10 @@ import Navbar from "./Components/NavBar/NavBar";
 
 function App() {
   return (
-    <Router>
+    <div>
       <Navbar />
-      <Routes>
-        <Route path="/modal" element={<Modal />} />
-      </Routes>
-    </Router>
+      <Modal />
+    </div>
   );
 }
 
