@@ -18,10 +18,10 @@
 }
 
 /* Modal overlay is visible only when the modal is rendered */
-/* .modal-overlay.visible {
+.modal-overlay.visible {
   opacity: 1;
   visibility: visible;
-} */
+}
 
 .modal-container {
   background-color: #fff;
