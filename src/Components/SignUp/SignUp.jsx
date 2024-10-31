@@ -1,14 +1,17 @@
 import React from "react";
 import "./SignUp.css";
-import { openPopup } from "../../slice/popUpslice";
-
-import { useDispatch } from "react-redux";
+import person from "../../Assets/person.png";
+import { useState } from "react";
+import { Modal } from "../Modal/Modal";
+import { useNavigate } from "react-router-dom";
 const SignUp = () => {
-  const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const handleUserLoginClick = () => {
+    navigate("/modal");
+  };
   return (
     <div className="btn-container">
-      <button className="user-btn" onClick={() => dispatch(openPopup())}>
+      <button className="user-btn" onClick={handleUserLoginClick}>
         <span>ورود کابران</span>
       </button>
       <button className="provider-btn">
