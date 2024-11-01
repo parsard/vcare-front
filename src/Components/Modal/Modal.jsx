@@ -3,7 +3,7 @@ import "./Modal.css";
 import { useDispatch, useSelector } from "react-redux";
 import { closePopup, getOpen } from "../../slice/popUpslice";
 import OtpInput from "../Verification/OtpInput";
-export const Modal = () => {
+export const Modal = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showOtpInput, setshowOtpInput] = useState(false);
 
@@ -11,14 +11,20 @@ export const Modal = () => {
   const dispatch = useDispatch();
   if (!isOpen) return;
   const handlePhoneNumber = (e) => {
+    e.preventDefault();
     setPhoneNumber(e.target.value);
   };
   const handlePhoneSubmit = (e) => {
     e.preventDefault();
-    //phone validation
-    //call be api
-    //show otp field
-    setshowOtpInput(true);
+
+    // Example of simple validation, check if it's exactly 11 digits (Iranian phone number format)
+    if (phoneNumber.match(/^09\d{9}$/)) {
+      // Consider fetching or making an API request here to verify the phone number
+      // before proceeding to the OTP step, if needed.
+      setshowOtpInput(true);
+    } else {
+      alert("Please enter a valid phone number.");
+    }
   };
   const onOtpSubmit = (otp) => {
     console.log("Login Successful", otp);
@@ -40,7 +46,7 @@ export const Modal = () => {
               برای استفاده از خدمات وی‌کِر لازم است وارد شوید. شماره موبایل خود
               را وارد کنید
             </p>
-            <form>
+            <form onSubmit={handlePhoneSubmit}>
               <div className="input-container">
                 <input
                   type="text"
@@ -51,11 +57,7 @@ export const Modal = () => {
                   required
                   onChange={handlePhoneNumber}
                 />
-                <button
-                  type="submit"
-                  className="submit-btn"
-                  onSubmit={handlePhoneSubmit}
-                >
+                <button type="submit" className="submit-btn">
                   ارسال کد تایید
                 </button>
               </div>
@@ -63,10 +65,10 @@ export const Modal = () => {
           </div>
         </div>
       ) : (
-        <div className="otp-container">
-          <p className="otp-text">کد ارسال شده را وارد کنید</p>
-          <OtpInput length={4} onOtpSubmit={onOtpSubmit} />
-        </div>
+        // <div className="otp-container">
+        //   <p className="otp-text">کد ارسال شده را وارد کنید</p>
+        <OtpInput length={4} onOtpSubmit={onOtpSubmit} />
+        // </div>
       )}
     </div>
   );

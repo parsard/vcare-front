@@ -97,3 +97,29 @@ p{
   margin: 20px;
   color:rgba(0,129,141,1) ; 
 }
+.otp-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+.otp-text {
+  color: rgba(0,129,141,1);
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+.otpInput{
+  width: 40px; /* Width of each input box */
+  height: 40px; /* Height of each input box */
+  margin: 0 5px; /* Spacing between input boxes */
+  font-size: 20px; /* Font size in the input box */
+  text-align: center; /* Align the text in the center horizontal */
+  border: 2px solid #00818d40; /* Border color similar to input-container */
+  border-radius: 5px; /* Rounded borders */
+  background-color: #f1f1f1; /* Background color similar to input-container */
+}
+.otpInput:focus {
+  border-color: rgba(0,129,141,1); /* Change border color when focused on the box */
+  outline: none; /* Remove default focus outline */
+}

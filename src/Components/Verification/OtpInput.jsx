@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./OtpInput.css";
 
 const OtpInput = ({ length = 4, onOtpSubmit = () => {} }) => {
   const [otp, setOtp] = useState(new Array(length).fill(""));
@@ -49,23 +50,28 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }) => {
       inputRefs.current[index - 1].focus();
     }
   };
-
   return (
-    <div>
-      {otp.map((value, index) => {
-        return (
-          <input
-            key={index}
-            type="text"
-            ref={(input) => (inputRefs.current[index] = input)}
-            value={value}
-            onChange={(e) => handleChange(index, e)}
-            onClick={() => handleClick(index)}
-            onKeyDown={(e) => handleKeyDown(index, e)}
-            className="otpInput"
-          />
-        );
-      })}
+    <div className="otp-modal-container ">
+      <div className="otp-container">
+        <h1 className="otp-text">کد ارسال شده را وارد کنید</h1>
+        <div className="otp-input-wrapper">
+          {otp.map((value, index) => {
+            return (
+              <input
+                key={index}
+                type="text"
+                ref={(input) => (inputRefs.current[index] = input)}
+                value={value}
+                onChange={(e) => handleChange(index, e)}
+                onClick={() => handleClick(index)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                className="otpInput"
+              />
+            );
+          })}
+          <button className="otp-submit-btn">تایید کد</button>
+        </div>
+      </div>
     </div>
   );
 };

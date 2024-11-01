@@ -10,7 +10,6 @@ export default function AppLayout() {
       <main>
         <Outlet></Outlet>
         <Modal></Modal>
-        <OtpInput />
       </main>
     </>
   );
