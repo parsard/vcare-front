@@ -9,7 +9,7 @@ const SignUp = () => {
   return (
     <div className="btn-container">
       <button className="user-btn" onClick={() => dispatch(openPopup())}>
-        <span>ورود کابران</span>
+        <span>ورود کاربران</span>
       </button>
       <button className="provider-btn">
         <span>ورود خدمات دهندگان</span>

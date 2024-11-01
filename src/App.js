@@ -1,10 +1,11 @@
 // import { useState } from "react";
-import { BrowserRouter, Route, Routes, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import { Modal } from "./Components/Modal/Modal";
 // import Navbar from "./Components/NavBar/NavBar";
 import AppLayout from "./ui/AppLayout";
 import { Provider } from "react-redux";
 import store from "./store";
+import Navbar from "./Components/NavBar/NavBar";
 
 function App() {
   return (
