@@ -20,7 +20,6 @@ export const Modal = (props) => {
   };
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
-    //validation
     if (phoneNumber.match(/^09\d{9}$/)) {
       try {
         await sendSms(phoneNumber);
@@ -32,13 +31,11 @@ export const Modal = (props) => {
       alert("Please enter a valid phone number.");
     }
   };
-
   const onOtpSubmit = async (otp) => {
     try {
       const response = await Verify(phoneNumber, otp);
       if (response.success) {
-        navigate("/");
-        // Redirect to home page
+        navigate("/"); // Navigate to home page
       } else {
         alert("Invalid OTP. Please try again.");
       }
