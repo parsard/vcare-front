@@ -6,13 +6,19 @@ import OtpInput from "../Verification/OtpInput";
 import sendSms from "../Verification/SendSms";
 import Verify from "../Verification/Verify";
 import { useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
 export const Modal = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const navigate = useNavigate();
   const isOpen = useSelector((state) => getOpen(state));
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!isOpen) {
+      setPhoneNumber(""); // Clear phone number when modal is closed
+      setShowOtpInput(false); // Reset OTP input visibility
+    }
+  }, [isOpen]);
   if (!isOpen) return;
   const handlePhoneNumber = (e) => {
     e.preventDefault();
@@ -35,9 +41,9 @@ export const Modal = (props) => {
     try {
       const response = await Verify(phoneNumber, otp);
       if (response.success) {
-        navigate("/"); // Navigate to home page
+        setShowOtpInput(false); // Navigate to home page
       } else {
-        alert("Invalid OTP. Please try again.");
+        alert("successful.");
       }
     } catch (error) {
       alert("Verification failed. Please try again.");
