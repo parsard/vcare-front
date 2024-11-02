@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const Verify = async (phone) => {
+const Verify = async (formattedPhone, otp) => {
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/otp/confirm`,
-      { phone }
+      { phone: formattedPhone, otp }
     );
     console.log("Response:", response);
-    return response;
+    return response.data;
   } catch (error) {
     console.error(
       "Error sending OTP:",
