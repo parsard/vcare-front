@@ -3,10 +3,14 @@ import "./Modal.css";
 import { useDispatch, useSelector } from "react-redux";
 import { closePopup, getOpen } from "../../slice/popUpslice";
 import OtpInput from "../Verification/OtpInput";
+import sendSms from "../Verification/SendSms";
+import Verify from "../Verification/Verify";
+import { useNavigate } from "react-router-dom";
+
 export const Modal = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [showOtpInput, setshowOtpInput] = useState(false);
-
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const navigate = useNavigate();
   const isOpen = useSelector((state) => getOpen(state));
   const dispatch = useDispatch();
   if (!isOpen) return;
@@ -14,20 +18,33 @@ export const Modal = (props) => {
     e.preventDefault();
     setPhoneNumber(e.target.value);
   };
-  const handlePhoneSubmit = (e) => {
+  const handlePhoneSubmit = async (e) => {
     e.preventDefault();
-
-    // Example of simple validation, check if it's exactly 11 digits (Iranian phone number format)
+    //validation
     if (phoneNumber.match(/^09\d{9}$/)) {
-      // Consider fetching or making an API request here to verify the phone number
-      // before proceeding to the OTP step, if needed.
-      setshowOtpInput(true);
+      try {
+        await sendSms(phoneNumber);
+        setShowOtpInput(true);
+      } catch (error) {
+        alert("Failed to send OTP. Please try again.");
+      }
     } else {
       alert("Please enter a valid phone number.");
     }
   };
-  const onOtpSubmit = (otp) => {
-    console.log("Login Successful", otp);
+
+  const onOtpSubmit = async (otp) => {
+    try {
+      const response = await Verify(phoneNumber, otp);
+      if (response.success) {
+        navigate("/");
+        // Redirect to home page
+      } else {
+        alert("Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      alert("Verification failed. Please try again.");
+    }
   };
 
   return (
@@ -41,8 +58,8 @@ export const Modal = (props) => {
             >
               &times;
             </span>
-            <h1>ورود به وی کر</h1>
-            <p>
+            <h1 className="modal-text">ورود به وی کر</h1>
+            <p className="modal-text p">
               برای استفاده از خدمات وی‌کِر لازم است وارد شوید. شماره موبایل خود
               را وارد کنید
             </p>

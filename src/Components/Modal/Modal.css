@@ -24,9 +24,10 @@
 }
 
 .modal-container {
-  background-color: #fff;
+  height: 380px;
+width: 100%; 
+ background-color: #fff;
   padding: 30px;
-  width: 90%;
   max-width: 400px;
   border-radius: 10px;
   text-align: center;
@@ -44,7 +45,7 @@
 
 /* Styling for input and button */
 .input-container {
-  
+  margin-top: 90px;
   position: relative;
   border: 2px solid;
   border-color: #00818d40;
@@ -53,7 +54,7 @@
   background-color: #f1f1f1;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 .country-code {
@@ -122,4 +123,10 @@ p{
 .otpInput:focus {
   border-color: rgba(0,129,141,1); /* Change border color when focused on the box */
   outline: none; /* Remove default focus outline */
+}
+.modal-text{
+  margin-top: 20px;
+}
+.p{
+  margin-bottom: 10px;
 }
