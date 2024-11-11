@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import "./OtpInput.css";
+import { closePopup, getOpen } from "../../slice/popUpslice";
+import { useDispatch, useSelector } from "react-redux";
+import sendSms from "./SendSms";
 
-const OtpInput = ({ length = 4, onOtpSubmit = () => {} }) => {
+const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
   const [otp, setOtp] = useState(new Array(length).fill(""));
   const inputRefs = useRef([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -50,9 +54,20 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }) => {
       inputRefs.current[index - 1].focus();
     }
   };
+  const handleResend = async () => {
+    try {
+      await sendSms(phoneNumber);
+      alert("کد مجدداً ارسال شد.");
+    } catch (error) {
+      alert("ارسال کد مجدد شکست خورد. دوباره امتحان کنید.");
+    }
+  };
   return (
     <div className="otp-modal-container ">
       <div className="otp-container">
+        <span onClick={() => dispatch(closePopup())} className="modal-close">
+          &times;
+        </span>
         <h1 className="otp-text">کد ارسال شده را وارد کنید</h1>
         <div className="otp-input-wrapper">
           {otp.map((value, index) => {
@@ -69,8 +84,11 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }) => {
               />
             );
           })}
-          <button className="otp-submit-btn">تایید کد</button>
         </div>
+        <button className="otp-submit-btn">تایید کد</button>
+        <button className="send-agian" onClick={handleResend}>
+          ارسال مجدد
+        </button>
       </div>
     </div>
   );

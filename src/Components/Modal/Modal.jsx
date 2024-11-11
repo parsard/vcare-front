@@ -7,19 +7,23 @@ import sendSms from "../Verification/SendSms";
 import Verify from "../Verification/Verify";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
+import { setToken } from "../Verification/TokenService";
 export const Modal = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
   const isOpen = useSelector((state) => getOpen(state));
   const dispatch = useDispatch();
   useEffect(() => {
     if (!isOpen) {
       setPhoneNumber(""); // Clear phone number when modal is closed
-      setShowOtpInput(false); // Reset OTP input visibility
+      setShowOtpInput(false);
+      setIsVisible(true); // Reset OTP input visibility
     }
   }, [isOpen]);
-  if (!isOpen) return;
+  if (!isOpen || !isVisible) return null;
   const handlePhoneNumber = (e) => {
     e.preventDefault();
     setPhoneNumber(e.target.value);
@@ -40,10 +44,18 @@ export const Modal = (props) => {
   const onOtpSubmit = async (otp) => {
     try {
       const response = await Verify(phoneNumber, otp);
-      if (response.success) {
-        setShowOtpInput(false); // Navigate to home page
+      console.log("response from server", response);
+      if (response.data && response.data.accessToken) {
+        const accessToken = response.data.accessToken;
+        //save tokens in cookie
+        setToken(accessToken);
+        setShowOtpInput(false);
+        setIsVisible(false);
+        // Navigate to home page
+
+        // navigate("/");
       } else {
-        alert("successful.");
+        alert("verification failed");
       }
     } catch (error) {
       alert("Verification failed. Please try again.");
@@ -87,7 +99,11 @@ export const Modal = (props) => {
       ) : (
         // <div className="otp-container">
         //   <p className="otp-text">کد ارسال شده را وارد کنید</p>
-        <OtpInput length={4} onOtpSubmit={onOtpSubmit} />
+        <OtpInput
+          length={4}
+          onOtpSubmit={onOtpSubmit}
+          phoneNumber={phoneNumber}
+        />
         // </div>
       )}
     </div>
