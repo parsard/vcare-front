@@ -1,15 +1,22 @@
 
 .otp-modal-container {
- 
+  position: fixed;
+  top: 100px; /* Adjust this value to be just below the navbar's height */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   background-color: rgba(0, 0, 0, 0.5); 
   height: 100vh;
   /* Semi-transparent background for overlay effect */
 }
 
 .otp-container {
+  
+  z-index: 1100;
   position: relative;
   flex-direction: column;
   align-items: center; 
@@ -20,7 +27,7 @@
   border-radius: 24.88px;
   height: 330.86px;
   background-color: #fff;
-  padding: 20px;
+  
   border-radius: 24px;
   text-align: center;
   box-shadow: 0px 0px 12.48px 0px rgba(0, 0, 0, 0.15);} 

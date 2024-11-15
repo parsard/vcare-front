@@ -6,6 +6,7 @@ const Verify = async (formattedPhone, otp) => {
       `${process.env.REACT_APP_API_URL}/api/otp/confirm`,
       { phone: formattedPhone, otp }
     );
+    console.log(response);
     console.log("Response:", response);
     return response.data;
   } catch (error) {
@@ -13,7 +14,9 @@ const Verify = async (formattedPhone, otp) => {
       "Error sending OTP:",
       error.response ? error.response.data : error.message
     );
-    throw error;
+    throw new Error(
+      error.response ? error.response.data.message : "server error"
+    );
   }
 };
 

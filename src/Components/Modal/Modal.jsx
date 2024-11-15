@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { setToken } from "../Verification/TokenService";
+import { login } from "../../slice/authSlice";
+
 export const Modal = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -48,7 +50,7 @@ export const Modal = (props) => {
       if (response.data && response.data.accessToken) {
         const accessToken = response.data.accessToken;
         //save tokens in cookie
-        setToken(accessToken);
+        dispatch(login(accessToken));
         setShowOtpInput(false);
         setIsVisible(false);
         // Navigate to home page
