@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setToken } from "./TokenService";
 
 const Verify = async (formattedPhone, otp) => {
   try {
@@ -6,6 +7,9 @@ const Verify = async (formattedPhone, otp) => {
       `${process.env.REACT_APP_API_URL}/api/otp/confirm`,
       { phone: formattedPhone, otp }
     );
+    const token = response.data.data.accessToken;
+    console.log(token);
+    setToken(token);
     console.log(response);
     console.log("Response:", response);
     return response.data;

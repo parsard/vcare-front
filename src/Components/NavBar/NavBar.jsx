@@ -10,14 +10,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../../slice/authSlice";
 import { useNavigate } from "react-router-dom";
+import UserProfile from "../UserDashbord/UserProfile";
+import { useState } from "react";
+import profileIcon from "../../Assets/profileIcon.png";
 
 const Navbar = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
   };
 
   return (
@@ -28,7 +35,7 @@ const Navbar = () => {
             src={userIcon}
             alt="Profile"
             className="profile-icon"
-            onClick={() => navigate("/profile")}
+            onClick={toggleProfile}
           />
         ) : (
           <SignUp />
@@ -44,6 +51,7 @@ const Navbar = () => {
           <img src={vcare} alt="" className="vcare" />
         </div>
       </nav>
+      {isProfileOpen && <UserProfile toggleModal={toggleProfile} />}
     </div>
   );
 };

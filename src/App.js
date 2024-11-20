@@ -24,9 +24,9 @@ function App() {
   }, [dispatch]);
   return (
     <Routes>
-      <Route element={<AppLayout></AppLayout>}>
-        <Route index path="/" element={<h1> </h1>}></Route>
-        <Route path="/profile" element={<UserProfile />} />
+      <Route index path="/" element={<AppLayout></AppLayout>}>
+        {/* {<Route index path="/" element={<h1> </h1>}></Route>} */}
+        {/* <Route path="/profile" element={<UserProfile />} /> */}
       </Route>
     </Routes>
   );

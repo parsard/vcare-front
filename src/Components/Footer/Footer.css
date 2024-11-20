@@ -1,17 +1,21 @@
+
+
+/* فوتر ثابت در پایین صفحه */
 .footer {
-  background: var(--Main-green,#00818D);
+  background: var(--Main-green, #00818D);
   box-shadow: 0px 10px 30px 0px rgba(0, 129, 141, 0.30);
-  
   color: white;
   padding: 20px 0;
-  position: fixed;
+  /* position: fixed; */
   bottom: 0;
+  left: 0;
   width: 100%;
   text-align: center;
   height: 200px;
-  
+  z-index: 10; /* برای اطمینان از اینکه فوتر از محتوای صفحه جلوتر باشد */
 }
 
+/* استایل‌های دیگر برای فوتر */
 .footer-content {
   display: flex;
   justify-content: space-around;
@@ -21,9 +25,8 @@
 }
 
 .footer-section {
-  flex:1;
+  flex: 1;
   padding: 10px;
-  
 }
 
 .footer-logo {
@@ -39,6 +42,5 @@
 }
 
 .social-icon {
-  width: 24px; /* Adjust size as needed */
+  width: 24px; /* اندازه آیکون‌های شبکه اجتماعی */
 }
-
