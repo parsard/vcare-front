@@ -53,14 +53,52 @@ export const updateProfile = createAsyncThunk(
       const token = getToken();
       if (!token) return rejectWithValue("توکنی موجود نیست");
 
-      const response = await api.put("/api/user", formData, {
+      const response = await api.patch("/api/user", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data; // داده‌های کاربری به‌روز شده
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data || "خطا در به‌روزرسانی پروفایل"
-      );
+      console.error("Update Profile Error:", error);
+
+      // بررسی انواع مختلف خطا
+      if (error.response) {
+        // خطاهای پاسخ سرور
+        const errorMessage =
+          error.response.data.message ||
+          error.response.data.error ||
+          "خطا در به‌روزرسانی پروفایل";
+
+        return rejectWithValue(errorMessage);
+      } else if (error.request) {
+        // خطاهای درخواست (مثل عدم اتصال به اینترنت)
+        return rejectWithValue("خطا در برقراری ارتباط با سرور");
+      } else {
+        // خطاهای داخلی
+        return rejectWithValue(error.message || "خطای نامشخص");
+      }
+    }
+  }
+);
+
+export const fetchCities = createAsyncThunk(
+  "auth/fetchCities",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/api/city");
+      const cities = response.data?.data?.cities;
+
+      console.log("Response from server:", response.data);
+
+      // بررسی اینکه data و cities مقدار دارند
+      if (!Array.isArray(cities)) {
+        console.error("فرمت داده سرور معتبر نیست یا cities خالی است");
+        return [];
+      }
+
+      return cities;
+    } catch (err) {
+      console.error("Error fetching cities:", err.message);
+      return rejectWithValue(err.response?.data || "خطا در دریافت شهرها");
     }
   }
 );
@@ -69,7 +107,8 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     isAuthenticated: false,
-    user: null, // نگهداری اطلاعات کاربر
+    user: null,
+    cities: [],
   },
   reducers: {
     login: (state, action) => {
@@ -92,6 +131,14 @@ export const authSlice = createSlice({
         state.user = null;
       }
     });
+    builder.addCase(fetchCities.fulfilled, (state, action) => {
+      state.cities = action.payload; // Store the list of cities
+    });
+
+    builder.addCase(fetchCities.rejected, (state, action) => {
+      console.error("City fetch error:", action.payload);
+      state.cities = [];
+    });
 
     // مدیریت درخواست بارگذاری پروفایل کاربر
     builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
@@ -108,6 +155,13 @@ export const authSlice = createSlice({
 
     builder.addCase(updateProfile.rejected, (state, action) => {
       console.error("Profile update error:", action.payload);
+      console.error("Full error object:", action.error);
+      if (action.payload) {
+        state.error = action.payload.message || "Update failed";
+      } else {
+        // اگر خطای شبکه یا غیره است
+        state.error = action.error.message || "Unknown error occurred";
+      }
     });
   },
 });

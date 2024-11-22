@@ -6,12 +6,16 @@ import {
   validateToken,
   updateProfile,
   fetchUserProfile,
+  fetchCities,
 } from "../../slice/authSlice";
 import { useEffect } from "react";
 
 const UserProfile = ({ toggleModal }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const cities = useSelector((state) => state.auth.cities);
+  const [citieName, setCityName] = useState("");
+  console.log("cities :", cities);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,19 +27,21 @@ const UserProfile = ({ toggleModal }) => {
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchCities());
+  }, [dispatch]);
 
   console.log(user);
   useEffect(() => {
     // پر کردن فرم با اطلاعات فعلی کاربر در صورت وجود
     if (user && user.data && Array.isArray) {
       const userData = user.data.user[0];
-
       setFormData({
-        firstName: userData.firstName || "",
-        lastName: userData.lastlame || "",
+        firstName: userData.firstname || "",
+        lastName: userData.lastname || "",
         gender: userData.gender || "",
         age: userData.age || "",
-        city: userData.city || "",
+        city: userData.city && userData.city._id ? userData.city._id : "", // بررسی امن
         phoneNumber: userData.phone || "",
         address: userData.address || "",
       });
@@ -48,10 +54,21 @@ const UserProfile = ({ toggleModal }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === "city") {
+      const selectedCity = cities.find((city) => city._id === value);
+      setCityName(selectedCity?.name || "");
+
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedCity ? selectedCity._id : "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const validateForm = () => {
@@ -64,7 +81,7 @@ const UserProfile = ({ toggleModal }) => {
       return false;
     }
 
-    if (!nameRegex.test(city)) {
+    if (!city) {
       alert("لطفا نام شهر را درست وارد کنید");
       return false;
     }
@@ -85,6 +102,15 @@ const UserProfile = ({ toggleModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
+      console.log("Form Data to Send:", {
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        age: formData.age,
+        gender: formData.gender,
+        city: formData.city,
+        phone: formData.phoneNumber,
+        address: formData.address,
+      });
       try {
         const result = await dispatch(updateProfile(formData)).unwrap();
         alert("اطلاعات با موفقیت به‌روزرسانی شد!");
@@ -197,8 +223,7 @@ const UserProfile = ({ toggleModal }) => {
             <label className="block text-sm" style={labelTextStyle}>
               شهر:
             </label>
-            <input
-              type="text"
+            <select
               name="city"
               value={formData.city}
               onChange={handleChange}
@@ -208,7 +233,20 @@ const UserProfile = ({ toggleModal }) => {
                 border: "2.772px solid rgba(0, 129, 141, 0.20)",
               }}
               required
-            />
+            >
+              <option value="" disabled>
+                انتخاب کنید
+              </option>
+              {Array.isArray(cities) && cities.length > 0 ? (
+                cities.map((city, index) => (
+                  <option key={index} value={city._id}>
+                    {city.name}
+                  </option>
+                ))
+              ) : (
+                <option disabled> شهری یافت نشد</option>
+              )}
+            </select>
           </div>
           <div>
             <label className="block text-sm" style={labelTextStyle}>
