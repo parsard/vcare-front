@@ -4,6 +4,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import api from "../Components/Verification/AxiosConfig";
 import { getToken, removeToken } from "../Components/Verification/TokenService";
+import { dark } from "@mui/material/styles/createPalette";
+import { data } from "autoprefixer";
 
 // تعریف تابع برای بارگذاری پروفایل کاربر
 export const fetchUserProfile = createAsyncThunk(
@@ -45,24 +47,24 @@ export const validateToken = createAsyncThunk(
   }
 );
 
-// تابع غیرهمزمان برای به‌روزرسانی پروفایل کاربر
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async (formData, { rejectWithValue }) => {
     try {
       const token = getToken();
       if (!token) return rejectWithValue("توکنی موجود نیست");
+      console.log(token);
 
       const response = await api.patch("/api/user", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data; // داده‌های کاربری به‌روز شده
+      return response.data;
     } catch (error) {
       console.error("Update Profile Error:", error);
 
       // بررسی انواع مختلف خطا
       if (error.response) {
-        // خطاهای پاسخ سرور
+        // خطاهای  سرور
         const errorMessage =
           error.response.data.message ||
           error.response.data.error ||
@@ -70,10 +72,8 @@ export const updateProfile = createAsyncThunk(
 
         return rejectWithValue(errorMessage);
       } else if (error.request) {
-        // خطاهای درخواست (مثل عدم اتصال به اینترنت)
         return rejectWithValue("خطا در برقراری ارتباط با سرور");
       } else {
-        // خطاهای داخلی
         return rejectWithValue(error.message || "خطای نامشخص");
       }
     }

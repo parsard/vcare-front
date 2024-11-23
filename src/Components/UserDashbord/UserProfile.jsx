@@ -102,17 +102,27 @@ const UserProfile = ({ toggleModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Form Data to Send:", {
+      const dataToSend = {
+        //username: formData.phoneNumber,
         firstname: formData.firstName,
         lastname: formData.lastName,
-        age: formData.age,
+        age: parseInt(formData.age, 10),
         gender: formData.gender,
         city: formData.city,
-        phone: formData.phoneNumber,
         address: formData.address,
+      };
+      console.log("Form Data to Send:", {
+        username: formData.phoneNumber,
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        age: parseInt(formData.age, 10),
+        gender: formData.gender,
+        city: formData.city,
       });
+
       try {
-        const result = await dispatch(updateProfile(formData)).unwrap();
+        console.log("before send", dataToSend);
+        await dispatch(updateProfile(dataToSend)).unwrap();
         alert("اطلاعات با موفقیت به‌روزرسانی شد!");
         toggleModal(); // Close the modal
       } catch (error) {
