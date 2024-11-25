@@ -13,8 +13,8 @@ export default function AppLayout() {
           <Outlet></Outlet>
           <Modal></Modal>
           <Article />
-          <Footer></Footer>
         </main>
+        <Footer></Footer>
       </div>
     </>
   );

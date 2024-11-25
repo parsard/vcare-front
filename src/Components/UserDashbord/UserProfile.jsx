@@ -9,6 +9,7 @@ import {
   fetchCities,
 } from "../../slice/authSlice";
 import { useEffect } from "react";
+import AlertPopup from "../AlertPopUp/AlertPopUp";
 
 const UserProfile = ({ toggleModal }) => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const UserProfile = ({ toggleModal }) => {
   const cities = useSelector((state) => state.auth.cities);
   const [citieName, setCityName] = useState("");
   console.log("cities :", cities);
+  const [alert, setAlert] = useState(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,27 +25,36 @@ const UserProfile = ({ toggleModal }) => {
     age: "",
     city: "",
     phoneNumber: "",
+    address: "",
   });
+
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchCities());
   }, [dispatch]);
-
+  useEffect(() => {
+    console.log("Fetched cities:", cities);
+  }, [cities]);
   console.log(user);
   useEffect(() => {
     // پر کردن فرم با اطلاعات فعلی کاربر در صورت وجود
-    if (user && user.data && Array.isArray) {
+    if (
+      user &&
+      user.data &&
+      Array.isArray(user.data.user) &&
+      user.data.user.length > 0
+    ) {
       const userData = user.data.user[0];
       setFormData({
-        firstName: userData.firstname || "",
-        lastName: userData.lastname || "",
-        gender: userData.gender || "",
-        age: userData.age || "",
-        city: userData.city && userData.city._id ? userData.city._id : "", // بررسی امن
-        phoneNumber: userData.phone || "",
-        address: userData.address || "",
+        firstName: userData?.firstname || "",
+        lastName: userData?.lastname || "",
+        gender: userData?.gender || "",
+        age: userData?.age || "",
+        city: userData?.city?._id || "",
+        phoneNumber: userData?.phone || "",
+        address: userData?.address || "",
       });
     }
   }, [user]);
@@ -61,7 +72,7 @@ const UserProfile = ({ toggleModal }) => {
 
       setFormData((prev) => ({
         ...prev,
-        city: selectedCity ? selectedCity._id : "",
+        city: value,
       }));
     } else {
       setFormData((prev) => ({
@@ -123,10 +134,21 @@ const UserProfile = ({ toggleModal }) => {
       try {
         console.log("before send", dataToSend);
         await dispatch(updateProfile(dataToSend)).unwrap();
-        alert("اطلاعات با موفقیت به‌روزرسانی شد!");
-        toggleModal(); // Close the modal
+        //alert("اطلاعات با موفقیت به‌روزرسانی شد!");
+        setAlert({
+          type: "success",
+          message: "اطلاعات با موفقیت به‌روزرسانی شد!",
+        });
+        setTimeout(() => {
+          setAlert(null);
+          toggleModal();
+        }, 3000);
       } catch (error) {
-        alert(`خطا در به‌روزرسانی پروفایل: ${error}`);
+        const errorMessage = error.toString();
+        setAlert({
+          type: "error",
+          message: `خطا در بروزرسانی پروفایل:${errorMessage}`,
+        });
       }
     }
   };
@@ -283,6 +305,7 @@ const UserProfile = ({ toggleModal }) => {
             </label>
             <textarea
               name="address"
+              value={formData.address}
               className={`${inputStyle} rounded-2xl border-2`}
               style={{
                 borderRadius: "18px",
@@ -308,6 +331,16 @@ const UserProfile = ({ toggleModal }) => {
             </button>
           </div>
         </form>
+        {/* Modify the AlertPopup rendering */}
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex justify-center pl-50">
+          {alert && alert.type && alert.message && (
+            <AlertPopup
+              type={alert.type}
+              message={alert.message}
+              onClose={() => setAlert(null)}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

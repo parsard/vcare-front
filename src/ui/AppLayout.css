@@ -5,11 +5,13 @@
   display: flex;
   flex-direction: column; /* چینش عمودی: محتوا و فوتر */
   min-height: 100vh; /* صفحه همیشه حداقل به اندازه ارتفاع صفحه مرورگر باشد */
+ 
 }
 
 /* محتوا که فضای باقی‌مانده را پر می‌کند */
 .content {
   
   flex: 1; /* این بخش از فضای صفحه استفاده می‌کند */
-  padding-bottom: 220px; /* فاصله برای فضای فوتر */
+  padding-bottom: 200px;   
+  box-sizing: border-box;
 }
