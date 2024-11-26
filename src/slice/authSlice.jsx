@@ -1,6 +1,10 @@
 // authSlice.js
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  isRejectedWithValue,
+} from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import api from "../Components/Verification/AxiosConfig";
 import { getToken, removeToken } from "../Components/Verification/TokenService";
@@ -43,6 +47,27 @@ export const validateToken = createAsyncThunk(
     } catch (error) {
       dispatch(logout()); // حذف توکن در صورت نامعتبر بودن
       return false;
+    }
+  }
+);
+export const logOutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      await api.post(
+        "/api/logout",
+        {},
+        {
+          credentials: "include", //ensures cookis are sent
+        }
+      );
+      //remove tokens from cookies
+      removeToken();
+      dispatch(logout());
+      return true;
+    } catch (error) {
+      console.error("logout error.", error);
+      return rejectWithValue(error.response?.data || "خطا در خروج از حساب");
     }
   }
 );
@@ -103,12 +128,38 @@ export const fetchCities = createAsyncThunk(
   }
 );
 
+export const fetchArticles = createAsyncThunk(
+  "articles/fetchArticles",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/api/articles");
+
+      // Transform the response to only include the required fields
+      const articles = response.data.map((article) => ({
+        id: article.id,
+        title: article.title,
+        imageUrl: article.imageUrl,
+        body: article.body,
+      }));
+
+      return articles;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "خطا در بارگذاری مقالات");
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
     isAuthenticated: false,
-    user: null,
+    user: {
+      data: { user: [] },
+    },
     cities: [],
+    articles: [],
+    articlesStatus: "idle",
+    ariclesError: null,
   },
   reducers: {
     login: (state, action) => {
@@ -162,6 +213,26 @@ export const authSlice = createSlice({
         // اگر خطای شبکه یا غیره است
         state.error = action.error.message || "Unknown error occurred";
       }
+    });
+    builder.addCase(logOutUser.fulfilled, (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+    });
+    builder.addCase(logOutUser.rejected, (state, action) => {
+      console.error("logout failed", action.payload);
+    });
+    builder.addCase(fetchArticles.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchArticles.fulfilled, (state, action) => {
+      state.loading = false;
+      state.articles = action.payload; // Store fetched articles
+    });
+    builder.addCase(fetchArticles.rejected, (state, action) => {
+      state.loading = "failed";
+      state.error = action.payload || "خطا در بارگذاری مقالات";
+      console.error("Articles fetch error:", action.payload);
     });
   },
 });

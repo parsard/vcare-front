@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // تصاویر را ایمپورت کنید
@@ -6,36 +6,46 @@ import feshar from "../../Assets/2.jpg";
 import nozad from "../../Assets/1.jpg";
 import ghafase from "../../Assets/4.jpg";
 import rie from "../../Assets/3.jpg";
-
+import { fetchArticles } from "../../slice/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 const Article = () => {
-  const articles = [
-    {
-      id: 1,
-      title: "اکسیژن خون نرمال چند است؟",
-      summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
-      imageUrl: feshar,
-    },
-    {
-      id: 2,
-      title: "زردی یا یرقان نوزاد",
-      summary: "علل و علائم یرقان نوزادان",
-      imageUrl: nozad,
-    },
-    {
-      id: 3,
-      title: "علت درد قفسه سینه سمت راست چیست؟",
-      summary: "بررسی علل ممکن درد قفسه سینه",
-      imageUrl: ghafase,
-    },
-    {
-      id: 4,
-      title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
-      summary: "همه چیز درباره آمفیزم ریه",
-      imageUrl: rie,
-    },
-  ];
+  // const articles = [
+  //   {
+  //     id: 1,
+  //     title: "اکسیژن خون نرمال چند است؟",
+  //     summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
+  //     imageUrl: feshar,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "زردی یا یرقان نوزاد",
+  //     summary: "علل و علائم یرقان نوزادان",
+  //     imageUrl: nozad,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "علت درد قفسه سینه سمت راست چیست؟",
+  //     summary: "بررسی علل ممکن درد قفسه سینه",
+  //     imageUrl: ghafase,
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
+  //     summary: "همه چیز درباره آمفیزم ریه",
+  //     imageUrl: rie,
+  //   },
+  // ];
+
+  const dispatch = useDispatch();
+  const { articles, error, loading } = useSelector((state) => state.auth);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  useEffect(() => {
+    dispatch(fetchArticles());
+  }, [dispatch]);
+  if (error) {
+    return <div>خطا در بارگزاری مقالات</div>;
+  }
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 2) % articles.length);

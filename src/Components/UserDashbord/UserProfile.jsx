@@ -10,6 +10,7 @@ import {
 } from "../../slice/authSlice";
 import { useEffect } from "react";
 import AlertPopup from "../AlertPopUp/AlertPopUp";
+import { logOutUser } from "../../slice/authSlice";
 
 const UserProfile = ({ toggleModal }) => {
   const dispatch = useDispatch();
@@ -110,6 +111,22 @@ const UserProfile = ({ toggleModal }) => {
     return true;
   };
 
+  const handleLogOut = async () => {
+    try {
+      await dispatch(logOutUser()).unwrap();
+      setAlert({
+        type: "success",
+        message: "با موفقیت از حساب خارج شدید",
+      });
+      toggleModal();
+    } catch (error) {
+      setAlert({
+        type: "error",
+        message: "خطا در خروج از حساب",
+      });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -142,13 +159,16 @@ const UserProfile = ({ toggleModal }) => {
         setTimeout(() => {
           setAlert(null);
           toggleModal();
-        }, 3000);
+        }, 2000);
       } catch (error) {
         const errorMessage = error.toString();
         setAlert({
           type: "error",
           message: `خطا در بروزرسانی پروفایل:${errorMessage}`,
         });
+        setTimeout(() => {
+          setAlert(null);
+        }, 2000);
       }
     }
   };
@@ -325,6 +345,7 @@ const UserProfile = ({ toggleModal }) => {
             <button
               type="button"
               className="text-red-600"
+              onClick={handleLogOut}
               // Add action onClick if needed
             >
               خروج از حساب کاربری
