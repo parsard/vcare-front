@@ -9,43 +9,43 @@ import rie from "../../Assets/3.jpg";
 import { fetchArticles } from "../../slice/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 const Article = () => {
-  // const articles = [
-  //   {
-  //     id: 1,
-  //     title: "اکسیژن خون نرمال چند است؟",
-  //     summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
-  //     imageUrl: feshar,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "زردی یا یرقان نوزاد",
-  //     summary: "علل و علائم یرقان نوزادان",
-  //     imageUrl: nozad,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "علت درد قفسه سینه سمت راست چیست؟",
-  //     summary: "بررسی علل ممکن درد قفسه سینه",
-  //     imageUrl: ghafase,
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
-  //     summary: "همه چیز درباره آمفیزم ریه",
-  //     imageUrl: rie,
-  //   },
-  // ];
+  const articles = [
+    {
+      id: 1,
+      title: "اکسیژن خون نرمال چند است؟",
+      summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
+      imageUrl: feshar,
+    },
+    {
+      id: 2,
+      title: "زردی یا یرقان نوزاد",
+      summary: "علل و علائم یرقان نوزادان",
+      imageUrl: nozad,
+    },
+    {
+      id: 3,
+      title: "علت درد قفسه سینه سمت راست چیست؟",
+      summary: "بررسی علل ممکن درد قفسه سینه",
+      imageUrl: ghafase,
+    },
+    {
+      id: 4,
+      title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
+      summary: "همه چیز درباره آمفیزم ریه",
+      imageUrl: rie,
+    },
+  ];
 
   const dispatch = useDispatch();
-  const { articles, error, loading } = useSelector((state) => state.auth);
+  const { error, loading } = useSelector((state) => state.auth);
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  useEffect(() => {
-    dispatch(fetchArticles());
-  }, [dispatch]);
-  if (error) {
-    return <div>خطا در بارگزاری مقالات</div>;
-  }
+  // useEffect(() => {
+  //   dispatch(fetchArticles());
+  // }, [dispatch]);
+  // if (error) {
+  //   return <div>خطا در بارگزاری مقالات</div>;
+  // }
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 2) % articles.length);
@@ -56,8 +56,11 @@ const Article = () => {
   };
 
   return (
-    <div className="relative w-full h-[350px] flex justify-center items-center overflow-hidden mb-20 mt-20 ">
-      <div className="w-[1000px] h-[350px] relative flex space-x-4">
+    <div className="relative   flex justify-center items-center overflow-hidden mb-10 mt-20 pt-20">
+      <div className="absolute top-0 right-0 z-10 p-4">
+        <h1 className="text-xl font-bold text-[#00818d]"> مجله وی کر </h1>
+      </div>
+      <div className="w-[1000px] h-[350px] relative flex space-x-8">
         <AnimatePresence mode="wait">
           {articles
             .slice(currentSlide, currentSlide + 2)
@@ -87,7 +90,7 @@ const Article = () => {
                   backgroundPosition: "center",
                 }}
               >
-                <div className="absolute bottom-[-50px] w-full bg-white/80 text[#00818d] p-4 rounded-full">
+                <div className="absolute bottom-[-50px] w-full bg-white/100 text[#00818d] p-4 rounded-full">
                   <h2 className="text-lg font-bold truncate text-[#00818d] text-center mb-10">
                     {article.title}
                   </h2>
