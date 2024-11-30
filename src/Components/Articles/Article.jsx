@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// تصاویر را ایمپورت کنید
 import feshar from "../../Assets/2.jpg";
 import nozad from "../../Assets/1.jpg";
 import ghafase from "../../Assets/4.jpg";
 import rie from "../../Assets/3.jpg";
 import { fetchArticles } from "../../slice/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Link } from "react-router-dom";
+
 const Article = () => {
   const articles = [
     {
@@ -58,7 +60,13 @@ const Article = () => {
   return (
     <div className="relative   flex justify-center items-center overflow-hidden mb-10 mt-20 pt-20">
       <div className="absolute top-0 right-0 z-10 p-4">
-        <h1 className="text-xl font-bold text-[#00818d]"> مجله وی کر </h1>
+        <h1
+          className="text-xl font-bold text-[#00818d]"
+          style={{ marginRight: "60px" }}
+        >
+          {" "}
+          مجله وی کر{" "}
+        </h1>
       </div>
       <div className="w-[1000px] h-[350px] relative flex space-x-8">
         <AnimatePresence mode="wait">
@@ -90,11 +98,12 @@ const Article = () => {
                   backgroundPosition: "center",
                 }}
               >
-                <div className="absolute bottom-[-50px] w-full bg-white/100 text[#00818d] p-4 rounded-full">
+                <Link to ={`/article/${article.id}`} className="absolute bottom-[-50px] w-full bg-white/100 text[#00818d] p-4 rounded-full">
+                  
                   <h2 className="text-lg font-bold truncate text-[#00818d] text-center mb-10">
                     {article.title}
                   </h2>
-                </div>
+                </Link>
               </motion.div>
             ))}
         </AnimatePresence>

@@ -2,7 +2,8 @@
 // index.js or App.js
 import "typeface-source-sans-pro";
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 // import { Modal } from "./Components/Modal/Modal";
 // import Navbar from "./Components/NavBar/NavBar";
 
@@ -12,6 +13,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import Navbar from "./Components/NavBar/NavBar";
 import UserProfile from "./Components/UserDashbord/UserProfile";
+import ArticleDetail from "./Components/Articles/ArticleDetail";
 import { validateToken } from "./slice/authSlice";
 import { useEffect } from "react";
 
@@ -23,12 +25,16 @@ function App() {
     dispatch(validateToken());
   }, [dispatch]);
   return (
-    <Routes>
-      <Route index path="/" element={<AppLayout></AppLayout>}>
-        {/* {<Route index path="/" element={<h1> </h1>}></Route>} */}
-        {/* <Route path="/profile" element={<UserProfile />} /> */}
-      </Route>
-    </Routes>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            {/* Nested Route for the Home page content */}
+            {/* <Route index element={<div>Home Content</div>} /> */}
+            
+            {/* Route for Article Details */}
+            <Route path="article/:id" element={<ArticleDetail />} />
+          </Route>
+        </Routes>
+     
   );
 }
 
