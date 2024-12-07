@@ -1,13 +1,14 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import info from "../../Assets/info.svg";
 
-const About = () => {
+const About = forwardRef((props,whyUsRef) => {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen"
       style={{ transform: "translateX(-30px)", marginTop: "10px",marginBottom:'50px' }}
     >
       <h1
+      ref={whyUsRef}
         className="text-xl font-bold text-[#00818d] mb-4 self-end "
         style={{ marginTop: "-30px", marginRight:'60px' }}
       >
@@ -30,6 +31,6 @@ const About = () => {
       </div>
     </div>
   );
-};
+});
 
 export default About;

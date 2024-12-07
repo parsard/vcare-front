@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import feshar from "../../Assets/2.jpg";
@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
- const Article = () => {
+ const Article = forwardRef((props,articleRef) => {
 //   const articles = [
     // {
     //   id: 1,
@@ -42,14 +42,17 @@ import { Link } from "react-router-dom";
   const {articles, error, loading,nextPage,prevPage } = useSelector((state) => state.auth);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  
+
   // useEffect(() => {
   //   dispatch(fetchArticles());
   // }, [dispatch]);
   useEffect(() => {
-    if (!articles.length || !nextPage ) {
+    if (!articles.length ) {
       dispatch(fetchArticles());
     }
-  }, [dispatch, articles.length,nextPage]);
+  }, [dispatch, articles.length]);
   if (error) {
     return <div>خطا در بارگزاری مقالات</div>;
   }
@@ -85,28 +88,31 @@ import { Link } from "react-router-dom";
   //   }
   // }
 
-  const nextSlide=()=>{
-    if(currentSlide +2 <articles.length){
-      setCurrentSlide((prev)=>prev+2)
-    }else if (nextPage){
-      dispatch(fetchArticles(nextPage)).then(() => setCurrentSlide(0));
+  // const nextSlide= ()=>{
+    
+  //   if(currentSlide +2 <articles.length){
+  //     setCurrentSlide((prev)=>prev+2)
+  //   }else if (nextPage && !loading){
+  //     dispatch(fetchArticles(nextPage)).then(() => setCurrentSlide(0));
 
-    }
-  }
-  const prevSlide=()=>{
-    if(currentSlide -2 >=0){
-      setCurrentSlide((prev)=>prev-2)
-    }else if (prevPage){
-      dispatch(fetchArticles(prevPage)).then(() => setCurrentSlide(articles.length -2));
+  //   }
+  // }
+  // const prevSlide= ()=>{
+    
+  //   if(currentSlide -2 >=0){
+  //     setCurrentSlide((prev)=>prev-2)
+  //   }else if (prevPage && !loading){
+  //     dispatch(fetchArticles(prevPage)).then(() => setCurrentSlide(articles.length -2));
 
-    }
-  }
+  //   }
+  // }
 
 
   return (
     <div className="relative   flex justify-center items-center overflow-hidden mb-10 mt-20 pt-20">
       <div className="absolute top-0 right-0 z-10 p-4">
         <h1
+        ref={articleRef}
           className="text-xl font-bold text-[#00818d]"
           style={{ marginRight: "60px" }}
         >
@@ -154,23 +160,23 @@ import { Link } from "react-router-dom";
             ))}
         </AnimatePresence>
 
-        <button
+        {/* <button
           onClick={prevSlide}
           className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/50 rounded-full p-2 z-10 hover:bg-white/70 transition-all duration-300"
           disabled={!prevPage && currentSlide === 0}
         >
           ←
-        </button>
-        <button
+        </button> */}
+        {/* <button
           onClick={nextSlide}
           className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/50 rounded-full p-2 z-10 hover:bg-white/70 transition-all duration-300"
           disabled={!nextPage && currentSlide + 2 >= articles.length}
         >
           →
-        </button>
+        </button> */}
       </div>
     </div>
   );
-};
+});
 
 export default Article;

@@ -14,7 +14,7 @@ import UserProfile from "../UserDashbord/UserProfile";
 import { useState } from "react";
 import profileIcon from "../../Assets/profileIcon.png";
 
-const Navbar = () => {
+const Navbar = ({onAboutClick,onArticleClick}) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
@@ -41,9 +41,9 @@ const Navbar = () => {
           <SignUp />
         )}
         <ul className="navbar-links">
-          <li>مجله وی کر</li>
+          <li onClick={onArticleClick}>مجله وی کر</li>
           <li>ارتباط باما</li>
-          <li>درباره ما</li>
+          <li onClick={onAboutClick}>درباره ما</li>
           <li>خدمات</li>
         </ul>
         <div className="navbar-logo">

@@ -31,6 +31,7 @@ nav ul li {
   /* font-family: 'Source Sans Pro', sans-serif; */
   color:#fff;
   font-size:16px;
+  cursor: pointer;
 }
 .navbar-logo{
   display: inline-flex;

@@ -144,8 +144,8 @@ export const fetchArticles = createAsyncThunk(
         body: article.body,
       }));
       const pagination={
-        nextPage :response.data?.data?.nextPage ||null,
-        prevPage :response.data?.data?.pervPage ||null,
+        nextPage :response.data?.data?.nextPage ??null,
+        prevPage :response.data?.data?.pervPage ??null,
       }
       console.log("Articles:", articles, "Next Page:", pagination, "Prev Page:", pagination);
 
