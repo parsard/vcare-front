@@ -133,16 +133,24 @@ export const fetchArticles = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/api/articles");
+      
 
-      // Transform the response to only include the required fields
-      const articles = response.data.map((article) => ({
-        id: article.id,
+      
+      console.log('article server',response.data)
+      const articles = response.data?.data?.articles?.map((article) => ({
+        id: article._id,
         title: article.title,
         imageUrl: article.imageUrl,
         body: article.body,
       }));
+      const pagination={
+        nextPage :response.data?.data?.nextPage ||null,
+        prevPage :response.data?.data?.pervPage ||null,
+      }
+      console.log("Articles:", articles, "Next Page:", pagination, "Prev Page:", pagination);
 
-      return articles;
+
+      return {articles,pagination};
     } catch (error) {
       return rejectWithValue(error.response?.data || "خطا در بارگذاری مقالات");
     }
@@ -158,8 +166,8 @@ export const authSlice = createSlice({
     },
     cities: [],
     articles: [],
-    articlesStatus: "idle",
-    ariclesError: null,
+    nextPage: null,
+    prevPage: null,
   },
   reducers: {
     login: (state, action) => {
@@ -169,7 +177,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      removeToken(); // حذف توکن از کوکی‌ها
+      removeToken();  
     },
   },
   extraReducers: (builder) => {
@@ -227,13 +235,17 @@ export const authSlice = createSlice({
     });
     builder.addCase(fetchArticles.fulfilled, (state, action) => {
       state.loading = false;
-      state.articles = action.payload; // Store fetched articles
+      state.articles = action.payload.articles;
+      state.nextPage = action.payload.pagination.nextPage;
+      state.prevPage = action.payload.pagination.prevPage; // Store fetched articles
     });
     builder.addCase(fetchArticles.rejected, (state, action) => {
-      state.loading = "failed";
-      state.error = action.payload || "خطا در بارگذاری مقالات";
-      console.error("Articles fetch error:", action.payload);
+      state.loading = false;
+      state.error =
+        action.payload || action.error.message || " در بارگذاری مقالات"; 
+      console.error("Articles fetch error:", action.payload || action.error);
     });
+    
   },
 });
 

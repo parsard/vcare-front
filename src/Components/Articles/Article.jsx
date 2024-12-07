@@ -10,52 +10,98 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
-const Article = () => {
-  const articles = [
-    {
-      id: 1,
-      title: "اکسیژن خون نرمال چند است؟",
-      summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
-      imageUrl: feshar,
-    },
-    {
-      id: 2,
-      title: "زردی یا یرقان نوزاد",
-      summary: "علل و علائم یرقان نوزادان",
-      imageUrl: nozad,
-    },
-    {
-      id: 3,
-      title: "علت درد قفسه سینه سمت راست چیست؟",
-      summary: "بررسی علل ممکن درد قفسه سینه",
-      imageUrl: ghafase,
-    },
-    {
-      id: 4,
-      title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
-      summary: "همه چیز درباره آمفیزم ریه",
-      imageUrl: rie,
-    },
-  ];
+ const Article = () => {
+//   const articles = [
+    // {
+    //   id: 1,
+    //   title: "اکسیژن خون نرمال چند است؟",
+    //   summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
+    //   imageUrl: feshar,
+    // },
+    // {
+    //   id: 2,
+    //   title: "زردی یا یرقان نوزاد",
+    //   summary: "علل و علائم یرقان نوزادان",
+    //   imageUrl: nozad,
+    // },
+    // {
+    //   id: 3,
+    //   title: "علت درد قفسه سینه سمت راست چیست؟",
+    //   summary: "بررسی علل ممکن درد قفسه سینه",
+    //   imageUrl: ghafase,
+    // },
+    // {
+    //   id: 4,
+    //   title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
+    //   summary: "همه چیز درباره آمفیزم ریه",
+    //   imageUrl: rie,
+    // },
+  // ];
 
   const dispatch = useDispatch();
-  const { error, loading } = useSelector((state) => state.auth);
+  const {articles, error, loading,nextPage,prevPage } = useSelector((state) => state.auth);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   // useEffect(() => {
   //   dispatch(fetchArticles());
   // }, [dispatch]);
-  // if (error) {
-  //   return <div>خطا در بارگزاری مقالات</div>;
+  useEffect(() => {
+    if (!articles.length || !nextPage ) {
+      dispatch(fetchArticles());
+    }
+  }, [dispatch, articles.length,nextPage]);
+  if (error) {
+    return <div>خطا در بارگزاری مقالات</div>;
+  }
+  if (loading) {
+    return <div>در حال بارگزاری</div>
+  }
+  
+
+  // const nextSlide = () => {
+  //   setCurrentSlide((prev) => (prev + 2) % articles.length);
+  // };
+
+  // const prevSlide = () => {
+  //   setCurrentSlide((prev) => (prev - 2 + articles.length) % articles.length);
+  // };
+  // const nextSlide = () => {
+  //   setCurrentSlide((prev) => (prev + 2 < articles.length ? prev + 2 : 0));
+  // };
+
+  // const prevSlide = () => {
+  //   setCurrentSlide((prev) => (prev - 2 >= 0 ? prev - 2 : articles.length - 2));
+  // };
+  // const handleNextPage = ()=>{
+  //   if (nextPage){
+  //     dispatch(fetchArticles(nextPage));
+  //     setCurrentSlide(0)
+  //   }
+  // }
+  // const handlePrevPage = ()=>{
+  //   if (nextPage){
+  //     dispatch(fetchArticles(prevPage));
+  //     setCurrentSlide(0)
+  //   }
   // }
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 2) % articles.length);
-  };
+  const nextSlide=()=>{
+    if(currentSlide +2 <articles.length){
+      setCurrentSlide((prev)=>prev+2)
+    }else if (nextPage){
+      dispatch(fetchArticles(nextPage)).then(() => setCurrentSlide(0));
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 2 + articles.length) % articles.length);
-  };
+    }
+  }
+  const prevSlide=()=>{
+    if(currentSlide -2 >=0){
+      setCurrentSlide((prev)=>prev-2)
+    }else if (prevPage){
+      dispatch(fetchArticles(prevPage)).then(() => setCurrentSlide(articles.length -2));
+
+    }
+  }
+
 
   return (
     <div className="relative   flex justify-center items-center overflow-hidden mb-10 mt-20 pt-20">
@@ -111,12 +157,14 @@ const Article = () => {
         <button
           onClick={prevSlide}
           className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/50 rounded-full p-2 z-10 hover:bg-white/70 transition-all duration-300"
+          disabled={!prevPage && currentSlide === 0}
         >
           ←
         </button>
         <button
           onClick={nextSlide}
           className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/50 rounded-full p-2 z-10 hover:bg-white/70 transition-all duration-300"
+          disabled={!nextPage && currentSlide + 2 >= articles.length}
         >
           →
         </button>

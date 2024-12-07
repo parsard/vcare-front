@@ -9,7 +9,7 @@ const About = () => {
     >
       <h1
         className="text-xl font-bold text-[#00818d] mb-4 self-end "
-        style={{ marginTop: "-30px", marginRight: "60px" }}
+        style={{ marginTop: "-30px", marginRight:'60px' }}
       >
         چرا وی کر؟
       </h1>
