@@ -148,6 +148,7 @@ import { Link } from "react-router-dom";
                   backgroundImage: `url(${article.imageUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
+                  cursor:"pointer"
                 }}
               >
                 <Link to ={`/article/${article.id}`} className="absolute bottom-[-50px] w-full bg-white/100 text[#00818d] p-4 rounded-full">
