@@ -33,7 +33,7 @@ const Navbar = ({onAboutClick,onArticleClick}) => {
         {isAuthenticated ? (
           <img
             src={userIcon}
-            alt="Profile"
+            alt="Profile" cd
             className="profile-icon"
             onClick={toggleProfile}
           />

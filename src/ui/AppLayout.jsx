@@ -7,6 +7,7 @@ import Article from "../Components/Articles/Article";
 import About from "../Components/About us/About";
 import { useRef } from "react";
 import { Block } from "@mui/icons-material";
+import QuickAccess from "../Components/QuickAccess/QuickAccess"; 
 export default function AppLayout() {
   const whyUsRef = useRef(null);
   const articleRef = useRef(null);
@@ -27,7 +28,7 @@ export default function AppLayout() {
         <main className="content ">
           <Outlet></Outlet>
           <Modal></Modal>
-
+          <QuickAccess />
           <Article ref={articleRef} />
           <About ref={whyUsRef} />
         </main>
