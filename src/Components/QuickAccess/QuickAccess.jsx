@@ -79,10 +79,10 @@ const QuickAccess = () => {
               lineHeight:"140%"
             }}
           >
-            <h1 style={{ color: '#00818D', fontSize: '32px', fontWeight: '900' }}>
+            <h1 style={{ color: '#00818D', fontSize: '36px', fontWeight: '900' }}>
             وی‌کِر
             </h1>
-            <p style={{ color: '#00818D', fontSize: '20px', fontWeight:'400' }}>
+            <p style={{ color: '#00818D', fontSize: '20px', fontWeight:'400' ,marginRight:0}}>
             ارائه دهنده خدمات بالینی در منزل            </p>
           </div>
           {/* Dropdown Container */}
@@ -107,7 +107,7 @@ const QuickAccess = () => {
             </div>
 
             {/* Dropdown 2 */}
-            <div className="w-28">
+            <div className="w-28 ">
               <Select
                 options={dropdown2Options}
                 onChange={handleDropdown2Change}
