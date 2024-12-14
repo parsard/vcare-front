@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet,useLocation } from "react-router-dom";
 import Navbar from "../Components/NavBar/NavBar";
 import { Modal } from "../Components/Modal/Modal";
 import OtpInput from "../Components/Verification/OtpInput";
@@ -21,16 +21,24 @@ export default function AppLayout() {
       articleRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+  const location = useLocation();
+
+  const isArticleDetail = location.pathname.startsWith("/article");
+
   return (
     <>
       <div className="flex-wrapper bg-[#EDF6F9]">
         <Navbar onAboutClick={scrollToWhyUs} onArticleClick={scrollToArticle}></Navbar>
         <main className="content ">
           <Outlet></Outlet>
+          { !isArticleDetail && (
+            <>
           <Modal></Modal>
           <QuickAccess />
           <Article ref={articleRef} />
           <About ref={whyUsRef} />
+            </>
+          )}
         </main>
         <Footer></Footer>
       </div>

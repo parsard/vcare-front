@@ -31,7 +31,8 @@ function App() {
             {/* <Route index element={<div>Home Content</div>} /> */}
             
             {/* Route for Article Details */}
-            <Route path="article/:id" element={<ArticleDetail />} />
+            <Route path="/article/:id" element={<ArticleDetail />} />
+
           </Route>
         </Routes>
      

@@ -7,47 +7,20 @@ import ghafase from "../../Assets/4.jpg";
 import rie from "../../Assets/3.jpg";
 import { fetchArticles } from "../../slice/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
  const Article = forwardRef((props,articleRef) => {
-//   const articles = [
-    // {
-    //   id: 1,
-    //   title: "اکسیژن خون نرمال چند است؟",
-    //   summary: "سطح طبیعی اکسیژن خون و اهمیت آن.",
-    //   imageUrl: feshar,
-    // },
-    // {
-    //   id: 2,
-    //   title: "زردی یا یرقان نوزاد",
-    //   summary: "علل و علائم یرقان نوزادان",
-    //   imageUrl: nozad,
-    // },
-    // {
-    //   id: 3,
-    //   title: "علت درد قفسه سینه سمت راست چیست؟",
-    //   summary: "بررسی علل ممکن درد قفسه سینه",
-    //   imageUrl: ghafase,
-    // },
-    // {
-    //   id: 4,
-    //   title: "آمفیزم ریه و هر آنچه باید درباره آن بدانید",
-    //   summary: "همه چیز درباره آمفیزم ریه",
-    //   imageUrl: rie,
-    // },
-  // ];
+
 
   const dispatch = useDispatch();
-  const {articles, error, loading,nextPage,prevPage } = useSelector((state) => state.auth);
+  const {articles, error, loading } = useSelector((state) => state.auth);
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const navigate = useNavigate();
+
   
 
-  // useEffect(() => {
-  //   dispatch(fetchArticles());
-  // }, [dispatch]);
+
   useEffect(() => {
     if (!articles.length ) {
       dispatch(fetchArticles());
@@ -58,6 +31,10 @@ import { Link } from "react-router-dom";
   }
   if (loading) {
     return <div>در حال بارگزاری</div>
+  }
+
+  const handleNavigateArticle = (id)=>{
+    navigate(`/article/${id}`)
   }
   
 
@@ -127,6 +104,7 @@ import { Link } from "react-router-dom";
             .map((article, index) => (
               <motion.div
                 key={article.id}
+                onClick={()=>handleNavigateArticle(article.id)}
                 initial={{ opacity: 0, x: index === 0 ? 100 : -100 }}
                 animate={{
                   opacity: 1,
@@ -150,13 +128,15 @@ import { Link } from "react-router-dom";
                   backgroundPosition: "center",
                   cursor:"pointer"
                 }}
+
+                // onClick={handleNavigateArticle(article.id)}
               >
-                <Link to ={`/article/${article.id}`} className="absolute bottom-[-50px] w-full bg-white/100 text[#00818d] p-4 rounded-full">
+                <div className="absolute bottom-[-50px] w-full bg-white/100 text[#00818d] p-4 rounded-full">
                   
                   <h2 className="text-lg font-bold truncate text-[#00818d] text-center mb-10">
                     {article.title}
                   </h2>
-                </Link>
+                </div>
               </motion.div>
             ))}
         </AnimatePresence>
