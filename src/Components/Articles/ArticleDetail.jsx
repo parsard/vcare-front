@@ -14,7 +14,14 @@ const ArticleDetail = () => {
       dispatch(fetchArticles()); // Fetch articles if they’re not loaded
     } else {
       // Find the article by ID in the Redux state
-      const selectedArticle = articles.find((article) => article.id === id);
+      const selectedArticle = articles.map((article) => ({
+          value:article._id,
+          label:article.imageUrl        
+      })
+
+      
+    
+    );
 
       setArticle(selectedArticle);
     }

@@ -2,23 +2,19 @@
 import React from "react";
 import "./NavBar.css";
 import logo from "../../Assets/logo.png";
-import person from "../../Assets/person.png";
 import vcare from "../../Assets/Vcare.png";
 import SignUp from "../SignUp/SignUp";
 import userIcon from "../../Assets/user-icon.png";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { logout } from "../../slice/authSlice";
-import { useNavigate } from "react-router-dom";
 import UserProfile from "../UserDashbord/UserProfile";
 import { useState } from "react";
-import profileIcon from "../../Assets/profileIcon.png";
+
 
 const Navbar = ({onAboutClick,onArticleClick}) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());

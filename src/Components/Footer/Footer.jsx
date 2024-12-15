@@ -6,7 +6,7 @@ import insta from "../../Assets/Logo Instagram.png";
 import x from "../../Assets/x.png";
 import youtube from "../../Assets/Logo-YouTube.png";
 
-const Footer = () => {
+const Footer = ({onArticleClick,onAboutClick,onQuickClick}) => {
   return (
     <footer className="footer">
       <div className="footer-content">
@@ -20,16 +20,32 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-section quick-links">
-          <h2>دسترسی سریع</h2>
+          <h2 style={{
+            cursor:'pointer'
+          }}
+          onClick={onQuickClick}
+          >دسترسی سریع</h2>
           <br />
           <ul>
-            <li>خدمات</li>
-            <li>مجله وی‌ کر</li>
-            <li>ارتباط با ما</li>
+            <li style={{
+            cursor:'pointer'
+          }}
+            >خدمات</li>
+            <li style={{
+            cursor:'pointer'
+          }}
+             onClick={onArticleClick}>مجله وی‌ کر</li>
+            <li style={{
+            cursor:'pointer'
+          }}
+            >ارتباط با ما</li>
           </ul>
         </div>
         <div className="footer-section about">
-          <h2>درباره وی‌کر</h2>
+          <h2 style={{
+            cursor:'pointer'
+          }}
+           onClick={onAboutClick}>درباره وی‌کر</h2>
         </div>
       </div>
     </footer>

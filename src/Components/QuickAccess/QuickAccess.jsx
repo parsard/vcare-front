@@ -1,61 +1,64 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import holder from '../../Assets/quick.svg';
 import Select from 'react-select';
 import { color } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCities } from '../../slice/authSlice';
+import { fetchCities, fetchServices } from '../../slice/authSlice';
 
-const QuickAccess = () => {
+const QuickAccess = forwardRef((props,quickRef) => {
 
   const dispatch = useDispatch();
-  const {cities,error,loading} = useSelector((state)=>state.auth);
+  const {cities,services} = useSelector((state)=>state.auth);
+ 
 
   const [dropDownCity,setDropDownCity] = useState([]);
+
+  const [dropDownServices,setDropDownServices] = useState([]);
 
   useEffect(()=>{
     dispatch(fetchCities())
   },[dispatch])
+  
+  useEffect(()=>{
+    dispatch(fetchServices())
+  },[dispatch])
 
   useEffect(()=>{
     if(cities && Array.isArray(cities)){
-      const formattedOptions = cities.map((city)=>({
+      const formattedCityOptions = cities.map((city)=>({
         value:city.id,
         label:city.name,
       }));
-      setDropDownCity(formattedOptions);
+      setDropDownCity(formattedCityOptions);
     }
   },[cities])
-  // Define options for the dropdowns
-  const dropdown1Options = [
-    { value: 'option1', label: 'Option 1' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' },
-  ];
 
+  useEffect(()=>{
+    if(services &&Array.isArray(services)){
+      const formattedServicesOptions = services.map((service)=>({
+         value:service._id,
+         label:service.title,
+      }));
+      setDropDownServices(formattedServicesOptions)
+    }
+  },[services])
   
-
-  const handleDropdown1Change = (selectedOption) => {
-    console.log("Dropdown 1 Selected Option: ", selectedOption);
-  };
-
-  const handleDropdown2Change = (selectedOption) => {
-    console.log("Dropdown 2 Selected Option: ", selectedOption);
-  };
+ 
   const customStyles = {
     control: (base, state) => ({
       ...base,
-      direction: 'rtl', // RTL direction
+      direction: 'rtl',
       textAlign: 'right',
       borderColor: state.isFocused ? '#00818D' : '#00818D',
-      boxShadow: state.isFocused ? '0 0 0 2px rgba(0, 129, 141, 0.5)' : 'none', // Subtle shadow on focus
+      boxShadow: state.isFocused ? '0 0 0 2px rgba(0, 129, 141, 0.5)' : 'none', 
       backgroundColor: 'white',
       '&:hover': {
-        borderColor: '#00818D', // Border color on hover
+        borderColor: '#00818D',
       },
     }),
     menu: (base) => ({
       ...base,
-      direction: 'rtl', // Ensure dropdown options are RTL
+      direction: 'rtl', 
       color: '#00818D',
     }),
     menuList: (base) => ({
@@ -96,7 +99,9 @@ const QuickAccess = () => {
         
         
         {/* Holder Image */}
-        <div className="relative w-[1150px] h-[350px]">
+        <div
+         ref={quickRef}
+         className="relative w-[1150px] h-[350px]">
           <img src={holder} alt="info" className="relative" />
           {/* Heading and Paragraph */}
           <div
@@ -128,8 +133,7 @@ const QuickAccess = () => {
             {/* Dropdown 1 */}
             <div className="w-72">
               <Select
-                options={dropdown1Options}
-                onChange={handleDropdown1Change}
+                options={dropDownServices}
                 placeholder="نوع خدمات را انتخاب کنید"
                 direction='rtl'
                 styles={
@@ -142,7 +146,6 @@ const QuickAccess = () => {
             <div className="w-28 ">
               <Select
                 options={dropDownCity}
-                onChange={handleDropdown2Change}
                 placeholder="شهر"
                 direction='rtl'
                 styles={
@@ -155,6 +158,6 @@ const QuickAccess = () => {
       </div>
     </div>
   );
-};
+});
 
 export default QuickAccess;

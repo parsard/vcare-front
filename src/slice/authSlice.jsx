@@ -143,19 +143,44 @@ export const fetchArticles = createAsyncThunk(
         imageUrl: article.imageUrl,
         body: article.body,
       }));
-      const pagination={
-        nextPage :response.data?.data?.nextPage ??null,
-        prevPage :response.data?.data?.pervPage ??null,
-      }
-      console.log("Articles:", articles, "Next Page:", pagination, "Prev Page:", pagination);
+      // const pagination={
+      //   nextPage :response.data?.data?.nextPage ??null,
+      //   prevPage :response.data?.data?.pervPage ??null,
+      // }
+      // console.log("Articles:", articles, "Next Page:", pagination, "Prev Page:", pagination);
 
 
-      return {articles,pagination};
+      return {articles};
     } catch (error) {
       return rejectWithValue(error.response?.data || "خطا در بارگذاری مقالات");
     }
   }
 );
+
+//services
+
+export const fetchServices = createAsyncThunk(
+  "services/fetchServices",
+  async(_,{rejectWithValue})=>{
+    try {
+      // console.log('sending get req...')
+      const response = await api.get('/api/services')
+      const services = response.data?.data?.services;
+      
+      console.log('services:' ,response.data)
+
+      if (!Array.isArray(services)) {
+        console.error("Invalid format: services is not an array");
+        return rejectWithValue("فرمت داده سرور معتبر نیست یا سرویس‌ها خالی است");
+      }
+
+      return services; 
+    }
+    catch(error){
+      return rejectWithValue(error.response?.data||'خطا در دریافت سرویس ها')
+    }
+  }
+)
 
 export const authSlice = createSlice({
   name: "auth",
@@ -166,6 +191,7 @@ export const authSlice = createSlice({
     },
     cities: [],
     articles: [],
+    services:[],
     nextPage: null,
     prevPage: null,
   },
@@ -236,8 +262,8 @@ export const authSlice = createSlice({
     builder.addCase(fetchArticles.fulfilled, (state, action) => {
       state.loading = false;
       state.articles = action.payload.articles;
-      state.nextPage = action.payload.pagination.nextPage;
-      state.prevPage = action.payload.pagination.prevPage; // Store fetched articles
+      // state.nextPage = action.payload.pagination.nextPage;
+      // state.prevPage = action.payload.pagination.prevPage; // Store fetched articles
     });
     builder.addCase(fetchArticles.rejected, (state, action) => {
       state.loading = false;
@@ -245,6 +271,24 @@ export const authSlice = createSlice({
         action.payload || action.error.message || " در بارگذاری مقالات"; 
       console.error("Articles fetch error:", action.payload || action.error);
     });
+
+    builder.addCase(fetchServices.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    
+    builder.addCase(fetchServices.fulfilled, (state, action) => {
+      state.loading = false;
+      state.services = action.payload; // Store fetched services
+    });
+    
+    builder.addCase(fetchServices.rejected, (state, action) => {
+      state.loading = false;
+      state.error =
+        action.payload || action.error.message || "خطا در بارگذاری سرویس‌ها";
+      console.error("Services fetch error:", action.payload || action.error);
+    });
+    
     
   },
 });

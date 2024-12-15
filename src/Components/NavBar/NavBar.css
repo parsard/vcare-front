@@ -16,6 +16,7 @@ nav{
   background: var(--Main-green,#00818D);
   box-shadow: 0px 10px 30px 0px rgba(0, 129, 141, 0.30);
   position: relative;
+  z-index: 1000;
 }
 nav ul {
   /* font-family: 'Source Sans Pro', sans-serif; */

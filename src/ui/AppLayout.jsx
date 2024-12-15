@@ -11,6 +11,7 @@ import QuickAccess from "../Components/QuickAccess/QuickAccess";
 export default function AppLayout() {
   const whyUsRef = useRef(null);
   const articleRef = useRef(null);
+  const quickRef = useRef(null);
   const scrollToWhyUs = ()=>{
     if (whyUsRef.current){
       whyUsRef.current.scrollIntoView({behavior:'smooth',block:"start"})
@@ -21,6 +22,11 @@ export default function AppLayout() {
       articleRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+  const scrollToQuick =()=>{
+    if(quickRef.current){
+      quickRef.current.scrollIntoView({behavior:'smooth',block:"start"})
+    }
+  }
   const location = useLocation();
 
   const isArticleDetail = location.pathname.startsWith("/article");
@@ -34,13 +40,14 @@ export default function AppLayout() {
           { !isArticleDetail && (
             <>
           <Modal></Modal>
-          <QuickAccess />
+          <QuickAccess ref={quickRef} />
           <Article ref={articleRef} />
           <About ref={whyUsRef} />
             </>
           )}
         </main>
-        <Footer></Footer>
+        <Footer onAboutClick={scrollToWhyUs}
+        onArticleClick={scrollToArticle} onQuickClick={scrollToQuick}></Footer>
       </div>
     </>
   );
