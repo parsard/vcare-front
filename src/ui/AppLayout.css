@@ -1,16 +1,9 @@
-/* AppLayout.css */
-
-/* ساختار کلی صفحه که از Flexbox برای چینش استفاده می‌کند */
 .flex-wrapper {
   display: flex;
-  flex-direction: column; /* چینش عمودی: محتوا و فوتر */
+  flex-direction: column;
   min-height: 100vh;
-  /* صفحه همیشه حداقل به اندازه ارتفاع صفحه مرورگر باشد */
 }
 
-/* محتوا که فضای باقی‌مانده را پر می‌کند */
 .content {
   flex: 1;
-
-  /* این بخش از فضای صفحه استفاده می‌کند */
 }

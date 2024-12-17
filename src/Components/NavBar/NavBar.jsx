@@ -1,5 +1,5 @@
 // Navbar.js
-import React from "react";
+import React, { useEffect } from "react";
 import "./NavBar.css";
 import logo from "../../Assets/logo.png";
 import vcare from "../../Assets/Vcare.png";
@@ -10,11 +10,12 @@ import { logout } from "../../slice/authSlice";
 import UserProfile from "../UserDashbord/UserProfile";
 import { useState } from "react";
 
-
-const Navbar = ({onAboutClick,onArticleClick}) => {
+const Navbar = ({ onAboutClick, onArticleClick }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
+
+  const [isSticky, setIsSticky] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -23,13 +24,30 @@ const Navbar = ({onAboutClick,onArticleClick}) => {
     setIsProfileOpen(!isProfileOpen);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 600) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div>
-      <nav className="navbar">
+      <nav className={`navbar ${isSticky ? "sticky" : ""}`}>
         {isAuthenticated ? (
           <img
             src={userIcon}
-            alt="Profile" cd
+            alt="Profile"
+            cd
             className="profile-icon"
             onClick={toggleProfile}
           />
