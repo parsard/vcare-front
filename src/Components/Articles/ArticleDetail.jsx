@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchArticles } from "../../slice/authSlice";
+import "./ArticleDetail.css";
 
 const ArticleDetail = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const ArticleDetail = () => {
   console.log("Redux articles:", articles);
 
   return (
-    <div className="article-detail p-10" dir="rtl">
+    <div className="p-10" dir="rtl">
       <h1 className="text-2xl font-bold text-[#00818d] text-right pb-10 ">
         {article.title}
       </h1>
@@ -34,7 +35,10 @@ const ArticleDetail = () => {
         alt={article.title}
         className="w-[870px] h-[470px] mx-auto my-4 rounded-lg"
       />
-      <div dangerouslySetInnerHTML={{ __html: article.body }}></div>
+      <div
+        className="article-content"
+        dangerouslySetInnerHTML={{ __html: article.body }}
+      ></div>
     </div>
   );
 };

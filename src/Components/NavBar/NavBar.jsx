@@ -26,7 +26,7 @@ const Navbar = ({ onAboutClick, onArticleClick }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 600) {
+      if (window.scrollY > 100) {
         setIsSticky(true);
       } else {
         setIsSticky(false);
