@@ -131,10 +131,8 @@ export const fetchArticles = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/api/articles");
-      
 
-      
-      console.log('article server',response.data)
+      console.log("article server", response.data);
       const articles = response.data?.data?.articles?.map((article) => ({
         id: article._id,
         title: article.title,
@@ -147,8 +145,7 @@ export const fetchArticles = createAsyncThunk(
       // }
       // console.log("Articles:", articles, "Next Page:", pagination, "Prev Page:", pagination);
 
-
-      return {articles};
+      return { articles };
     } catch (error) {
       return rejectWithValue(error.response?.data || "خطا در بارگذاری مقالات");
     }
@@ -159,26 +156,55 @@ export const fetchArticles = createAsyncThunk(
 
 export const fetchServices = createAsyncThunk(
   "services/fetchServices",
-  async(_,{rejectWithValue})=>{
+  async (_, { rejectWithValue }) => {
     try {
       // console.log('sending get req...')
-      const response = await api.get('/api/services')
+      const response = await api.get("/api/services");
       const services = response.data?.data?.services;
-      
-      console.log('services:' ,response.data)
+
+      console.log("services:", response.data);
 
       if (!Array.isArray(services)) {
         console.error("Invalid format: services is not an array");
-        return rejectWithValue("فرمت داده سرور معتبر نیست یا سرویس‌ها خالی است");
+        return rejectWithValue(
+          "فرمت داده سرور معتبر نیست یا سرویس‌ها خالی است"
+        );
       }
 
-      return services; 
-    }
-    catch(error){
-      return rejectWithValue(error.response?.data||'خطا در دریافت سرویس ها')
+      return services;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "خطا در دریافت سرویس ها");
     }
   }
-)
+);
+
+export const fetchServiceProviders = createAsyncThunk(
+  "auth/fetchServiceProviders",
+  async ({ cityId, ServiceId }, { rejectWithValue }) => {
+    try {
+      //build query params
+      const queryParams = new URLSearchParams();
+      if (cityId) queryParams.append("city", cityId);
+      if (ServiceId) queryParams.append("service", ServiceId);
+
+      const response = await api.get(`/api/serviceProviders?${queryParams}`);
+      const providers = response.data?.data?.providers;
+
+      console.log("providers", providers);
+
+      if (!Array.isArray(providers)) {
+        console.error("invalid response,providers is not an array");
+        return rejectWithValue("there is no providers");
+      }
+      return providers;
+    } catch (error) {
+      console.error("error fetching providers", error);
+      return rejectWithValue(
+        error.response?.data || "fail to recieve providers"
+      );
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -189,7 +215,8 @@ export const authSlice = createSlice({
     },
     cities: [],
     articles: [],
-    services:[],
+    services: [],
+    serviceProviders: [],
     nextPage: null,
     prevPage: null,
   },
@@ -201,7 +228,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      removeToken();  
+      removeToken();
     },
   },
   extraReducers: (builder) => {
@@ -266,7 +293,7 @@ export const authSlice = createSlice({
     builder.addCase(fetchArticles.rejected, (state, action) => {
       state.loading = false;
       state.error =
-        action.payload || action.error.message || " در بارگذاری مقالات"; 
+        action.payload || action.error.message || " در بارگذاری مقالات";
       console.error("Articles fetch error:", action.payload || action.error);
     });
 
@@ -274,20 +301,36 @@ export const authSlice = createSlice({
       state.loading = true;
       state.error = null;
     });
-    
+
     builder.addCase(fetchServices.fulfilled, (state, action) => {
       state.loading = false;
-      state.services = action.payload; // Store fetched services
+      state.services = action.payload;
     });
-    
+
     builder.addCase(fetchServices.rejected, (state, action) => {
       state.loading = false;
       state.error =
         action.payload || action.error.message || "خطا در بارگذاری سرویس‌ها";
       console.error("Services fetch error:", action.payload || action.error);
     });
-    
-    
+
+    builder
+      .addCase(fetchServiceProviders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchServiceProviders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.serviceProviders = action.payload;
+      })
+      .addCase(fetchServiceProviders.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload ||
+          action.error.message ||
+          "خطا در بارگذاری ارائه‌دهندگان خدمات";
+        console.error("Providers fetch error:", action.payload || action.error);
+      });
   },
 });
 
