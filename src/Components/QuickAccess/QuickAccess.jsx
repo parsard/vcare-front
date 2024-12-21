@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 const QuickAccess = forwardRef((props, quickRef) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cities, services, providers } = useSelector((state) => state.auth);
+  const { cities, services } = useSelector((state) => state.auth);
 
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -53,16 +53,18 @@ const QuickAccess = forwardRef((props, quickRef) => {
   //onclick for reserve button
 
   const handleReserveClick = () => {
-    console.log("Selected City:", selectedCity);
-    console.log("Selected Service:", selectedService);
     if (selectedCity && selectedService) {
-      const city = selectedCity.label;
-      const service = selectedService.label;
-      navigate(`/reserve?city=${city}&service=${service}`);
+      navigate("/reserve", {
+        state: {
+          cityId: selectedCity.value,
+          serviceId: selectedService.value,
+        },
+      });
     } else {
-      alert("Please select city and service");
+      alert("Please select a city and a service.");
     }
   };
+
   const customStyles = {
     control: (base, state) => ({
       ...base,
@@ -156,6 +158,7 @@ const QuickAccess = forwardRef((props, quickRef) => {
             <div className="w-72">
               <Select
                 options={dropDownServices}
+                // options
                 placeholder="نوع خدمات را انتخاب کنید"
                 direction="rtl"
                 styles={customStyles}
