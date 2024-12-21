@@ -3,14 +3,22 @@ import holder from "../../Assets/quick.svg";
 import Select from "react-select";
 import { color } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCities, fetchServices } from "../../slice/authSlice";
+import {
+  fetchCities,
+  fetchServices,
+  fetchServiceProviders,
+} from "../../slice/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const QuickAccess = forwardRef((props, quickRef) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cities, services } = useSelector((state) => state.auth);
+  const { cities, services, providers } = useSelector((state) => state.auth);
+
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
 
   const [dropDownCity, setDropDownCity] = useState([]);
-
   const [dropDownServices, setDropDownServices] = useState([]);
 
   useEffect(() => {
@@ -42,6 +50,19 @@ const QuickAccess = forwardRef((props, quickRef) => {
     }
   }, [services]);
 
+  //onclick for reserve button
+
+  const handleReserveClick = () => {
+    console.log("Selected City:", selectedCity);
+    console.log("Selected Service:", selectedService);
+    if (selectedCity && selectedService) {
+      const city = selectedCity.label;
+      const service = selectedService.label;
+      navigate(`/reserve?city=${city}&service=${service}`);
+    } else {
+      alert("Please select city and service");
+    }
+  };
   const customStyles = {
     control: (base, state) => ({
       ...base,
@@ -138,6 +159,9 @@ const QuickAccess = forwardRef((props, quickRef) => {
                 placeholder="نوع خدمات را انتخاب کنید"
                 direction="rtl"
                 styles={customStyles}
+                onChange={(selectedOption) =>
+                  setSelectedService(selectedOption)
+                }
               />
             </div>
 
@@ -148,6 +172,7 @@ const QuickAccess = forwardRef((props, quickRef) => {
                 placeholder="شهر"
                 direction="rtl"
                 styles={customStyles}
+                onChange={(selectedOption) => setSelectedCity(selectedOption)}
               />
               <button
                 className="w-28 h-10 text-white font-normal"
@@ -157,7 +182,7 @@ const QuickAccess = forwardRef((props, quickRef) => {
                   border: "none",
                   marginTop: "20px",
                 }}
-                onClick={() => alert("Button clicked!")}
+                onClick={handleReserveClick}
               >
                 ثبت نوبت
               </button>

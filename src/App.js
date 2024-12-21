@@ -18,6 +18,7 @@ import { validateToken } from "./slice/authSlice";
 import { useEffect } from "react";
 
 import { useDispatch } from "react-redux";
+import { Reserve } from "./Components/QuickAccess/Reserve";
 function App() {
   const dispatch = useDispatch();
 
@@ -25,17 +26,16 @@ function App() {
     dispatch(validateToken());
   }, [dispatch]);
   return (
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            {/* Nested Route for the Home page content */}
-            {/* <Route index element={<div>Home Content</div>} /> */}
-            
-            {/* Route for Article Details */}
-            <Route path="/article/:id" element={<ArticleDetail />} />
+    <Routes>
+      <Route path="/" element={<AppLayout />}>
+        {/* Nested Route for the Home page content */}
+        {/* <Route index element={<div>Home Content</div>} /> */}
 
-          </Route>
-        </Routes>
-     
+        {/* Route for Article Details */}
+        <Route path="/reserve" element={<Reserve />} />
+        <Route path="/article/:id" element={<ArticleDetail />} />
+      </Route>
+    </Routes>
   );
 }
 
