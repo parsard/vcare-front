@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./Modal.css";
 
 import { closePopup, getOpen } from "../../slice/popUpslice";
 import OtpInput from "../Verification/OtpInput";
@@ -8,11 +7,13 @@ import OtpInput from "../Verification/OtpInput";
 import sendSms from "../Verification/SendSms";
 import Verify from "../Verification/Verify";
 import { login } from "../../slice/authSlice";
+import AlertPopup from "../AlertPopUp/AlertPopUp";
 
 export const Modal = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [alert, setAlert] = useState({ show: false, type: null, message: "" });
 
   const isOpen = useSelector((state) => getOpen(state));
   const dispatch = useDispatch();
@@ -47,12 +48,23 @@ export const Modal = () => {
       try {
         await sendSms(phoneNumber);
         setShowOtpInput(true); // Show OTP input on success
+        showAlert({ type: "success", message: "کد تایید ارسال شد" });
       } catch (error) {
-        alert("Failed to send OTP. Please try again.");
+        showAlert({
+          type: "error",
+          message: "ارسال کد تایید با مشکل مواجه شد",
+        });
       }
     } else {
-      alert("Please enter a valid phone number.");
+      showAlert({ type: "error", message: "شماره موبایل نامعتبر است" });
     }
+  };
+
+  const showAlert = ({ type, message }) => {
+    setAlert({ show: true, type, message });
+    setTimeout(() => {
+      setAlert((prev) => ({ ...prev, show: false }));
+    }, 2000);
   };
 
   const onOtpSubmit = async (otp) => {
@@ -153,6 +165,15 @@ export const Modal = () => {
             length={4}
             onOtpSubmit={onOtpSubmit}
             phoneNumber={phoneNumber}
+          />
+        )}
+      </div>
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex justify-center pl-50">
+        {alert.show && alert.type && alert.message && (
+          <AlertPopup
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert((prev) => ({ ...prev, show: false }))}
           />
         )}
       </div>

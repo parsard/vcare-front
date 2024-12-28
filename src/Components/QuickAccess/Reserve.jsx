@@ -75,25 +75,37 @@ export const Reserve = () => {
               <div
                 key={provider._id}
                 className="flex items-center bg-white border border-gray-400 rounded-[34px] shadow-sm "
-                style={{ maxWidth: "843px", height: "139px", margin: "0 auto" }}
+                style={{
+                  maxWidth: "843px",
+                  height: "139px",
+                  margin: "0 auto",
+                }}
               >
-                <div className="flex items-center justify-center w-20 h-20 bg-teal-300 rounded-full shadow-md mr-4">
-                  <span className="text-2xl font-bold text-white">
+                <div
+                  className="flex items-center justify-center w-20 h-20 rounded-full shadow-md mr-4"
+                  style={{ background: "#00818D" }}
+                >
+                  {/* <span className="text-2xl font-bold text-white">
                     {provider.firstname[0]}
-                  </span>
+                  </span> */}
                 </div>
-                <div className="flex flex-col justify-between flex-1 text-right">
+                <div className="flex flex-col justify-between flex-1 text-right mr-5 mb-6">
                   <div className="mt-8">
                     <h3 className="text-lg font-bold text-gray-800  ">
                       {provider.firstname} {provider.lastname}
                     </h3>
-                    <p className="text-sm text-gray-600 pt-3 mt-0 mb-0">
+                    <p className="text-sm text-gray-600 pt-3 mt-0 mb-2">
                       {provider.role}
                     </p>
                   </div>
-                  <p className="text-sm text-gray-500">{provider.city.name}</p>
+                  <p className="text-sm text-gray-500 mb-2">
+                    {provider.city.name}
+                  </p>
                 </div>
-                <button className="bg-teal-500 text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-teal-600 transition ml-6">
+                <button
+                  className=" text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-teal-600 transition ml-6"
+                  style={{ background: "#00818D" }}
+                >
                   نوبت بگیرید{" "}
                 </button>
               </div>
