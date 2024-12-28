@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import "./OtpInput.css";
-import { closePopup, getOpen } from "../../slice/popUpslice";
-import { useDispatch, useSelector } from "react-redux";
+import { closePopup } from "../../slice/popUpslice";
+import { useDispatch } from "react-redux";
 import sendSms from "./SendSms";
 
 const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
@@ -20,15 +19,12 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
     if (isNaN(value)) return;
 
     const newOtp = [...otp];
-    // allow only one input
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
 
-    // submit trigger
     const combinedOtp = newOtp.join("");
     if (combinedOtp.length === length) onOtpSubmit(combinedOtp);
 
-    // Move to next input if current field is filled
     if (value && index < length - 1 && inputRefs.current[index + 1]) {
       inputRefs.current[index + 1].focus();
     }
@@ -36,10 +32,8 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
 
   const handleClick = (index) => {
     inputRefs.current[index].setSelectionRange(1, 1);
-
-    // optional
     if (index > 0 && !otp[index - 1]) {
-      inputRefs.current[otp.indexOf("")].focus();
+      inputRefs.current[otp.indexOf("")]?.focus();
     }
   };
 
@@ -50,10 +44,10 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
       index > 0 &&
       inputRefs.current[index - 1]
     ) {
-      // Move focus to the previous input field on backspace
       inputRefs.current[index - 1].focus();
     }
   };
+
   const handleResend = async () => {
     try {
       await sendSms(phoneNumber);
@@ -62,31 +56,53 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
       alert("ارسال کد مجدد شکست خورد. دوباره امتحان کنید.");
     }
   };
+
   return (
-    <div className="otp-modal-container ">
-      <div className="otp-container">
-        <span onClick={() => dispatch(closePopup())} className="modal-close">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="relative bg-white rounded-3xl shadow-lg w-[380px] h-[330px] p-6 flex flex-col justify-center items-center">
+        {/* Close Button */}
+        <button
+          onClick={() => dispatch(closePopup())}
+          className="absolute top-4 right-4 text-2xl font-bold text-gray-800 hover:text-gray-600"
+        >
           &times;
-        </span>
-        <h1 className="otp-text">کد ارسال شده را وارد کنید</h1>
-        <div className="otp-input-wrapper">
-          {otp.map((value, index) => {
-            return (
-              <input
-                key={index}
-                type="text"
-                ref={(input) => (inputRefs.current[index] = input)}
-                value={value}
-                onChange={(e) => handleChange(index, e)}
-                onClick={() => handleClick(index)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                className="otpInput"
-              />
-            );
-          })}
+        </button>
+
+        {/* Title */}
+        <h1 className="text-lg font-bold text-teal-700 mb-10">
+          کد ارسال شده را وارد کنید
+        </h1>
+
+        {/* OTP Input Fields */}
+        <div className="flex justify-center mb-6">
+          {otp.map((value, index) => (
+            <input
+              key={index}
+              type="text"
+              ref={(input) => (inputRefs.current[index] = input)}
+              value={value}
+              onChange={(e) => handleChange(index, e)}
+              onClick={() => handleClick(index)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              className="w-10 h-10 mx-1 text-lg text-center border-2  rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              style={{ borderColor: " rgba(0, 129, 141, 0.25)" }}
+            />
+          ))}
         </div>
-        <button className="otp-submit-btn">تایید کد</button>
-        <button className="send-agian" onClick={handleResend}>
+
+        {/* Submit Button */}
+        <button
+          onClick={() => onOtpSubmit(otp.join(""))}
+          className="bg-teal-700 text-white px-4 py-2 rounded-lg font-semibold mb-4"
+        >
+          تایید کد
+        </button>
+
+        {/* Resend Code Button */}
+        <button
+          onClick={handleResend}
+          className="text-teal-700 text-sm cursor-pointer"
+        >
           ارسال مجدد
         </button>
       </div>
