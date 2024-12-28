@@ -131,7 +131,12 @@ const QuickAccess = forwardRef((props, quickRef) => {
             }}
           >
             <h1
-              style={{ color: "#00818D", fontSize: "36px", fontWeight: "900" }}
+              style={{
+                color: "#00818D",
+                fontSize: "36px",
+                fontWeight: "900",
+                marginBottom: "10px",
+              }}
             >
               وی‌کِر
             </h1>

@@ -1,6 +1,5 @@
-/* Modal.css */
-
 /* The modal overlay is hidden initially by default */
+/*
 .modal-overlay {
   
   position: fixed;
@@ -13,11 +12,11 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  visibility: hidden; /* Hidden initially */
+  visibility: hidden; 
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Modal overlay is visible only when the modal is rendered */
+
 .modal-overlay.visible {
   opacity: 1;
   visibility: visible;
@@ -44,7 +43,7 @@ width: 100%;
   color: #333;
 }
 
-/* Styling for input and button */
+
 .input-container {
   margin-top: 90px;
   position: relative;
@@ -55,7 +54,6 @@ width: 100%;
   background-color: #f1f1f1;
   padding: 10px;
   border-radius: 5px;
-  /* margin-bottom: 20px; */
 }
 
 .country-code {
@@ -112,22 +110,31 @@ p{
   margin-bottom: 20px;
 }
 .otpInput{
-  width: 40px; /* Width of each input box */
-  height: 40px; /* Height of each input box */
-  margin: 0 5px; /* Spacing between input boxes */
-  font-size: 20px; /* Font size in the input box */
-  text-align: center; /* Align the text in the center horizontal */
-  border: 2px solid #00818d40; /* Border color similar to input-container */
-  border-radius: 5px; /* Rounded borders */
-  background-color: #f1f1f1; /* Background color similar to input-container */
+  width: 40px; 
+  height: 40px; 
+  margin: 0 5px; 
+  font-size: 20px;
+  text-align: center;  
+  border: 2px solid #00818d40; 
+  border-radius: 5px; 
+  background-color: #f1f1f1; 
 }
 .otpInput:focus {
-  border-color: rgba(0,129,141,1); /* Change border color when focused on the box */
-  outline: none; /* Remove default focus outline */
+  border-color: rgba(0,129,141,1); 
+  outline: none;
 }
 .modal-text{
   margin-top: 20px;
 }
 .p{
   margin-bottom: 10px;
+}
+  */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
 }

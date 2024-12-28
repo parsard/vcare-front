@@ -1,23 +1,22 @@
-import React, { useState } from "react";
-import "./Modal.css";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "./Modal.css";
+
 import { closePopup, getOpen } from "../../slice/popUpslice";
 import OtpInput from "../Verification/OtpInput";
+
 import sendSms from "../Verification/SendSms";
 import Verify from "../Verification/Verify";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import Cookies from "js-cookie";
-import { setToken } from "../Verification/TokenService";
 import { login } from "../../slice/authSlice";
 
-export const Modal = (props) => {
+export const Modal = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const navigate = useNavigate();
+
   const isOpen = useSelector((state) => getOpen(state));
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!isOpen) {
       setPhoneNumber(""); // Clear phone number when modal is closed
@@ -25,17 +24,29 @@ export const Modal = (props) => {
       setIsVisible(true); // Reset OTP input visibility
     }
   }, [isOpen]);
-  if (!isOpen || !isVisible) return null;
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"; // Disable scrolling
+    } else {
+      document.body.style.overflow = ""; // Re-enable scrolling
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   const handlePhoneNumber = (e) => {
     e.preventDefault();
     setPhoneNumber(e.target.value);
   };
+
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
     if (phoneNumber.match(/^09\d{9}$/)) {
       try {
         await sendSms(phoneNumber);
-        setShowOtpInput(true);
+        setShowOtpInput(true); // Show OTP input on success
       } catch (error) {
         alert("Failed to send OTP. Please try again.");
       }
@@ -43,71 +54,108 @@ export const Modal = (props) => {
       alert("Please enter a valid phone number.");
     }
   };
+
   const onOtpSubmit = async (otp) => {
     try {
       const response = await Verify(phoneNumber, otp);
-      console.log("response from server", response);
       if (response.data && response.data.accessToken) {
         const accessToken = response.data.accessToken;
-        //save tokens in cookie
-        dispatch(login(accessToken));
+        dispatch(login(accessToken)); // Save token to Redux
+        dispatch(closePopup());
         setShowOtpInput(false);
-        setIsVisible(false);
-        // Navigate to home page
-
-        // navigate("/");
+        setIsVisible(false); // Close modal
       } else {
-        alert("verification failed");
+        alert("Verification failed");
       }
     } catch (error) {
       alert("Verification failed. Please try again.");
     }
   };
+  if (!isOpen || !isVisible) return null;
 
   return (
-    <div>
-      {!showOtpInput ? (
-        <div className="modal-overlay visible">
-          <div className="modal-container">
-            <span
-              onClick={() => dispatch(closePopup())}
-              className="modal-close"
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="relative bg-white rounded-3xl shadow-lg w-[380px] h-[330px] p-6 flex flex-col justify-center items-center">
+        {/* Close Button */}
+        <button
+          onClick={() => dispatch(closePopup())}
+          className="absolute top-4 right-4 text-2xl font-bold text-gray-800 hover:text-gray-600"
+        >
+          &times;
+        </button>
+
+        {/* Title */}
+        <h1
+          className="text-center mb-4"
+          style={{
+            color: "#00818D",
+            fontSize: "24px",
+            fontWeight: "900",
+            width: "70%",
+          }}
+        >
+          ورود به وی‌کر
+        </h1>
+        {!showOtpInput ? (
+          <>
+            <p
+              className="text-center  mb-8 "
+              style={{
+                color: "#00818D",
+                fontSize: "14px",
+                fontWeight: "400",
+                width: "70%",
+              }}
             >
-              &times;
-            </span>
-            <h1 className="modal-text">ورود به وی کر</h1>
-            <p className="modal-text p">
               برای استفاده از خدمات وی‌کِر لازم است وارد شوید. شماره موبایل خود
               را وارد کنید
             </p>
-            <form onSubmit={handlePhoneSubmit}>
-              <div className="input-container">
+
+            {/* Phone Input */}
+            <form onSubmit={handlePhoneSubmit} className="w-full px-4">
+              <div
+                className="flex items-center bg-gray-100 border  rounded-xl px-4 py-3 mb-4"
+                style={{ borderColor: "#00818D" }}
+              >
+                <span className="text-teal-700 text-lg font-medium mr-2">
+                  +98
+                </span>
                 <input
                   type="text"
-                  placeholder=" 09-- --- ----"
+                  placeholder="--- --- ----"
                   value={phoneNumber}
                   maxLength="11"
                   pattern="09[0-9]{9}"
                   required
                   onChange={handlePhoneNumber}
+                  className="flex-1 bg-transparent outline-none text-sm tracking-widest"
                 />
-                <button type="submit" className="submit-btn">
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-center mt-4">
+                <button
+                  type="submit"
+                  className=" text-white px-4 py-2 rounded-lg font-semibold "
+                  style={{
+                    background: "#00818D",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
                   ارسال کد تایید
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      ) : (
-        // <div className="otp-container">
-        //   <p className="otp-text">کد ارسال شده را وارد کنید</p>
-        <OtpInput
-          length={4}
-          onOtpSubmit={onOtpSubmit}
-          phoneNumber={phoneNumber}
-        />
-        // </div>
-      )}
+          </>
+        ) : (
+          <OtpInput
+            length={4}
+            onOtpSubmit={onOtpSubmit}
+            phoneNumber={phoneNumber}
+          />
+        )}
+      </div>
     </div>
   );
 };
