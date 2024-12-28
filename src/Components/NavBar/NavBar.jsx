@@ -42,7 +42,7 @@ const Navbar = ({ onAboutClick, onArticleClick }) => {
 
   return (
     <div>
-      <nav className={`navbar ${isSticky ? "sticky" : ""}`}>
+      <nav className="navbar">
         {isAuthenticated ? (
           <img
             src={userIcon}
