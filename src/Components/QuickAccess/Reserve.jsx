@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
 import axios from "axios";
+import PersianDatePicker from "./PersianDatePicker";
 
 export const Reserve = () => {
   const location = useLocation();
@@ -10,6 +11,11 @@ export const Reserve = () => {
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  //datepicker popup
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     if (cityId && serviceId) {
@@ -29,6 +35,19 @@ export const Reserve = () => {
         });
     }
   }, [cityId, serviceId]);
+
+  const handleReserveClick = (provider) => {
+    setSelectedProvider(provider);
+    setShowDatePicker(true);
+  };
+
+  const handleDateSelect = (jalaliDate) => {
+    setSelectedDate(jalaliDate);
+    setShowDatePicker(false);
+    console.log(
+      `Reserved with ${selectedProvider.firstname} ${selectedProvider.lastname} on ${jalaliDate}`
+    );
+  };
 
   if (loading) {
     return (
@@ -69,7 +88,7 @@ export const Reserve = () => {
         dir="rtl"
         className="flex justify-center items-start min-h-screen bg-[#EDF6F9] py-10"
       >
-        <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-[90%] mx-auto">
+        <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-[90%] mx-auto ">
           <div className="space-y-6">
             {providers.map((provider) => (
               <div
@@ -79,16 +98,13 @@ export const Reserve = () => {
                   maxWidth: "843px",
                   height: "139px",
                   margin: "0 auto",
+                  marginBottom: "20px",
                 }}
               >
                 <div
                   className="flex items-center justify-center w-20 h-20 rounded-full shadow-md mr-4"
                   style={{ background: "#00818D" }}
-                >
-                  {/* <span className="text-2xl font-bold text-white">
-                    {provider.firstname[0]}
-                  </span> */}
-                </div>
+                ></div>
                 <div className="flex flex-col justify-between flex-1 text-right mr-5 mb-6">
                   <div className="mt-8">
                     <h3 className="text-lg font-bold text-gray-800  ">
@@ -105,15 +121,41 @@ export const Reserve = () => {
                 <button
                   className=" text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-teal-600 transition ml-6"
                   style={{ background: "#00818D" }}
+                  onClick={() => handleReserveClick(provider)}
                 >
-                  نوبت بگیرید{" "}
+                  نوبت بگیرید
                 </button>
               </div>
             ))}
           </div>
         </div>
       </div>
+
       <Footer />
+
+      {/* Popup for Date Picker */}
+      {showDatePicker && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-8 shadow-lg">
+            <PersianDatePicker onDateSelect={handleDateSelect} />
+            <button
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
+              onClick={() => setShowDatePicker(false)}
+            >
+              بستن
+            </button>
+          </div>
+        </div>
+      )}
+
+      {selectedDate && selectedProvider && (
+        <div className="fixed bottom-4 right-4 bg-green-100 text-green-800 p-4 rounded-lg shadow-md">
+          <p>
+            تاریخ انتخاب شده برای {selectedProvider.firstname}{" "}
+            {selectedProvider.lastname}: {selectedDate}
+          </p>
+        </div>
+      )}
     </>
   );
 };

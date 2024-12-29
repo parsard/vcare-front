@@ -19,7 +19,7 @@ const SignUp = () => {
             fontStyle: "normal",
             marginRight: "12px",
           }}
-          onClick={() => dispatch(openPopup)}
+          onClick={() => dispatch(openPopup())}
         >
           <span> ورود کاربران</span>
         </button>
