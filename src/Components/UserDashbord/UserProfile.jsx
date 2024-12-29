@@ -349,7 +349,6 @@ const UserProfile = ({ toggleModal }) => {
               type="button"
               className="text-red-600"
               onClick={handleLogOut}
-              // Add action onClick if needed
             >
               خروج از حساب کاربری
             </button>

@@ -78,6 +78,7 @@ const OtpInput = ({ length = 4, onOtpSubmit = () => {} }, phoneNumber) => {
           {otp.map((value, index) => (
             <input
               key={index}
+              placeholder="_"
               type="text"
               ref={(input) => (inputRefs.current[index] = input)}
               value={value}
