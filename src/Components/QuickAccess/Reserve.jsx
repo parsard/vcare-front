@@ -4,6 +4,7 @@ import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
 import axios from "axios";
 import PersianDatePicker from "./PersianDatePicker";
+import TimePickerModal from "./TimePickerModal";
 
 export const Reserve = () => {
   const location = useLocation();
@@ -11,11 +12,17 @@ export const Reserve = () => {
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  //datepicker popup
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(null);
+
+  // Datepicker popup
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  //time picker
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const availableTimes = ["12:00", "13:00", "14:00", "15:00"];
 
   useEffect(() => {
     if (cityId && serviceId) {
@@ -44,8 +51,19 @@ export const Reserve = () => {
   const handleDateSelect = (jalaliDate) => {
     setSelectedDate(jalaliDate);
     setShowDatePicker(false);
+    setShowTimePicker(true);
+
     console.log(
       `Reserved with ${selectedProvider.firstname} ${selectedProvider.lastname} on ${jalaliDate}`
+    );
+  };
+
+  const handleTimeSelect = (time) => {
+    setSelectedTime(time);
+    setShowTimePicker(false);
+
+    console.log(
+      `Reserved with ${selectedProvider.firstname} ${selectedProvider.lastname} on ${selectedDate} at ${time}`
     );
   };
 
@@ -119,7 +137,7 @@ export const Reserve = () => {
                   </p>
                 </div>
                 <button
-                  className=" text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-teal-600 transition ml-6"
+                  className="text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-teal-600 transition ml-6"
                   style={{ background: "#00818D" }}
                   onClick={() => handleReserveClick(provider)}
                 >
@@ -133,14 +151,31 @@ export const Reserve = () => {
 
       <Footer />
 
-      {/* Popup for Date Picker */}
       {showDatePicker && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-8 shadow-lg">
+          <div
+            className="bg-white rounded-lg shadow-lg p-4"
+            style={{
+              width: "320px", // Modal width
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {/* Calendar */}
             <PersianDatePicker onDateSelect={handleDateSelect} />
+
+            {/* Close Button */}
             <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
-              onClick={() => setShowDatePicker(false)}
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+              }}
+              onClick={() => {
+                setShowDatePicker(false);
+                setSelectedProvider(null);
+              }}
             >
               بستن
             </button>
@@ -148,13 +183,12 @@ export const Reserve = () => {
         </div>
       )}
 
-      {selectedDate && selectedProvider && (
-        <div className="fixed bottom-4 right-4 bg-green-100 text-green-800 p-4 rounded-lg shadow-md">
-          <p>
-            تاریخ انتخاب شده برای {selectedProvider.firstname}{" "}
-            {selectedProvider.lastname}: {selectedDate}
-          </p>
-        </div>
+      {showTimePicker && (
+        <TimePickerModal
+          times={availableTimes}
+          onTimeSelect={handleTimeSelect}
+          onClose={() => setShowTimePicker(false)}
+        />
       )}
     </>
   );
