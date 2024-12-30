@@ -1,5 +1,5 @@
 // authSlice.js
-
+import axios from "axios";
 import {
   createSlice,
   createAsyncThunk,
@@ -182,26 +182,20 @@ export const fetchServiceProviders = createAsyncThunk(
   "auth/fetchServiceProviders",
   async ({ cityId, ServiceId }, { rejectWithValue }) => {
     try {
-      //build query params
-      const queryParams = new URLSearchParams();
-      if (cityId) queryParams.append("city", cityId);
-      if (ServiceId) queryParams.append("service", ServiceId);
+      const response = await axios.get(
+        `http://localhost:8080/api/service-providers?serviceId=${ServiceId}&cityId=${cityId}`
+      );
 
-      const response = await api.get(`/api/serviceProviders?${queryParams}`);
-      const providers = response.data?.data?.providers;
-
-      console.log("providers", providers);
-
+      const providers = response.data.data?.serviceProviders || [];
       if (!Array.isArray(providers)) {
-        console.error("invalid response,providers is not an array");
-        return rejectWithValue("there is no providers");
+        console.error("Invalid response: serviceProviders is not an array");
+        return rejectWithValue("No providers available.");
       }
+
       return providers;
     } catch (error) {
-      console.error("error fetching providers", error);
-      return rejectWithValue(
-        error.response?.data || "fail to recieve providers"
-      );
+      console.error("API Error:", error);
+      return rejectWithValue("Failed to fetch service providers.");
     }
   }
 );

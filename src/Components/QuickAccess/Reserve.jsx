@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
 import axios from "axios";
 import PersianDatePicker from "./PersianDatePicker";
 import TimePickerModal from "./TimePickerModal";
+import { use } from "react";
+import { fetchServiceProviders } from "../../slice/authSlice";
+import jalaali from "jalaali-js";
 
 export const Reserve = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const { cityId, serviceId } = location.state || {};
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
+  const { serviceProviders } = useSelector((state) => state.auth);
+
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [gregorianDate, setGregorianDate] = useState(null); // For converted date
 
   // Datepicker popup
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -24,6 +33,55 @@ export const Reserve = () => {
 
   const availableTimes = ["12:00", "13:00", "14:00", "15:00"];
 
+  const normalizeNumerals = (str) => {
+    const persianNumbers = [
+      /۰/g,
+      /۱/g,
+      /۲/g,
+      /۳/g,
+      /۴/g,
+      /۵/g,
+      /۶/g,
+      /۷/g,
+      /۸/g,
+      /۹/g,
+    ];
+    const englishNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+    let normalizedStr = str;
+    for (let i = 0; i < persianNumbers.length; i++) {
+      normalizedStr = normalizedStr.replace(
+        persianNumbers[i],
+        englishNumbers[i]
+      );
+    }
+    return normalizedStr;
+  };
+
+  useEffect(() => {
+    if (cityId && serviceId) {
+      dispatch(fetchServiceProviders({ cityId, ServiceId: serviceId }));
+    }
+  }, [cityId, serviceId, dispatch]);
+
+  useEffect(() => {
+    if (selectedProvider && gregorianDate) {
+      axios
+        .get(
+          `http://localhost:8080/api/timeSlots?serviceProviderId=${selectedProvider._id}&date=${gregorianDate}`
+        )
+        .then((response) => {
+          const fetchedTimeSlots = response.data.data.timeSlots || [];
+          console.log("Fetched Time Slots:", fetchedTimeSlots);
+          setTimeSlots(fetchedTimeSlots);
+        })
+        .catch((error) => {
+          console.error("Error fetching time slots:", error);
+          setTimeSlots([]);
+        });
+      console.log("gregorianDate", gregorianDate);
+    }
+  }, [selectedProvider, gregorianDate]);
   useEffect(() => {
     if (cityId && serviceId) {
       setLoading(true);
@@ -49,13 +107,41 @@ export const Reserve = () => {
   };
 
   const handleDateSelect = (jalaliDate) => {
-    setSelectedDate(jalaliDate);
+    console.log("Selected Jalali Date (raw):", jalaliDate);
+
+    // Normalize Persian/Arabic numerals
+    const normalizedJalaaliDate = normalizeNumerals(jalaliDate);
+    console.log("Normalized Jalali Date:", normalizedJalaaliDate);
+
+    // Validate the normalized Jalali date format
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedJalaaliDate)) {
+      console.error("Invalid Jalali Date Format:", normalizedJalaaliDate);
+      return;
+    }
+
+    const [year, month, day] = normalizedJalaaliDate.split("-");
+    const gregorian = jalaali.toGregorian(
+      parseInt(year, 10),
+      parseInt(month, 10),
+      parseInt(day, 10)
+    );
+
+    // Validate Gregorian date conversion
+    if (!gregorian.gy || !gregorian.gm || !gregorian.gd) {
+      console.error("Gregorian Date Conversion Failed:", gregorian);
+      return;
+    }
+
+    const formattedGregorianDate = `${gregorian.gy}-${String(
+      gregorian.gm
+    ).padStart(2, "0")}-${String(gregorian.gd).padStart(2, "0")}`;
+    setGregorianDate(formattedGregorianDate);
+
+    console.log("Converted Gregorian Date:", formattedGregorianDate);
+
+    setSelectedDate(normalizedJalaaliDate);
     setShowDatePicker(false);
     setShowTimePicker(true);
-
-    console.log(
-      `Reserved with ${selectedProvider.firstname} ${selectedProvider.lastname} on ${jalaliDate}`
-    );
   };
 
   const handleTimeSelect = (time) => {
