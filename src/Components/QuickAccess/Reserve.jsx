@@ -31,7 +31,7 @@ export const Reserve = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState(null);
 
-  const availableTimes = ["12:00", "13:00", "14:00", "15:00"];
+  // const availableTimes = ["12:00", "13:00", "14:00", "15:00"];
 
   const normalizeNumerals = (str) => {
     const persianNumbers = [
@@ -71,7 +71,11 @@ export const Reserve = () => {
           `http://localhost:8080/api/timeSlots?serviceProviderId=${selectedProvider._id}&date=${gregorianDate}`
         )
         .then((response) => {
-          const fetchedTimeSlots = response.data.data.timeSlots || [];
+          const fetchedTimeSlots =
+            response.data.data.timeSlots.map((slot) => ({
+              startTime: slot.startTime,
+              endTime: slot.endTime,
+            })) || [];
           console.log("Fetched Time Slots:", fetchedTimeSlots);
           setTimeSlots(fetchedTimeSlots);
         })
@@ -271,7 +275,7 @@ export const Reserve = () => {
 
       {showTimePicker && (
         <TimePickerModal
-          times={availableTimes}
+          timeSlots={timeSlots}
           onTimeSelect={handleTimeSelect}
           onClose={() => setShowTimePicker(false)}
         />
