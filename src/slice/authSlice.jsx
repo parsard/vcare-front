@@ -30,7 +30,6 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
-// تابع غیرهمزمان برای اعتبارسنجی توکن
 export const validateToken = createAsyncThunk(
   "auth/validateToken",
   async (_, { dispatch }) => {

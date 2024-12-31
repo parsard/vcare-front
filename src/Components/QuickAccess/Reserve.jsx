@@ -9,6 +9,7 @@ import TimePickerModal from "./TimePickerModal";
 import { use } from "react";
 import { fetchServiceProviders } from "../../slice/authSlice";
 import jalaali from "jalaali-js";
+import { getToken } from "../Verification/TokenService";
 
 export const Reserve = () => {
   const dispatch = useDispatch();
@@ -29,9 +30,7 @@ export const Reserve = () => {
 
   //time picker
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(null);
-
-  // const availableTimes = ["12:00", "13:00", "14:00", "15:00"];
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState(null);
 
   const normalizeNumerals = (str) => {
     const persianNumbers = [
@@ -73,8 +72,10 @@ export const Reserve = () => {
         .then((response) => {
           const fetchedTimeSlots =
             response.data.data.timeSlots.map((slot) => ({
+              _id: slot._id,
               startTime: slot.startTime,
               endTime: slot.endTime,
+              status: slot.status,
             })) || [];
           console.log("Fetched Time Slots:", fetchedTimeSlots);
           setTimeSlots(fetchedTimeSlots);
@@ -86,6 +87,41 @@ export const Reserve = () => {
       console.log("gregorianDate", gregorianDate);
     }
   }, [selectedProvider, gregorianDate]);
+
+  const handleReserve = () => {
+    const token = getToken();
+    console.log("selected time slot", selectedTimeSlots);
+    if (selectedTimeSlots && selectedTimeSlots.status === "available") {
+      axios
+        .patch(
+          `http://localhost:8080/api/timeSlots/${selectedTimeSlots._id}/reserve`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          alert("رزرو با موفقیت انجام شد");
+
+          setTimeSlots((prevSlots) =>
+            prevSlots.map((slot) =>
+              slot._id === selectedTimeSlots._id
+                ? { ...slot, status: "reserved" }
+                : slot
+            )
+          );
+        })
+        .catch((error) => {
+          console.error("error reservation", error);
+          alert("error reservation");
+        });
+    } else {
+      alert("please select time slot before reserve");
+    }
+  };
+
   useEffect(() => {
     if (cityId && serviceId) {
       setLoading(true);
@@ -149,12 +185,14 @@ export const Reserve = () => {
   };
 
   const handleTimeSelect = (time) => {
-    setSelectedTime(time);
+    console.log("time object", time);
+    setSelectedTimeSlots(time);
     setShowTimePicker(false);
 
     console.log(
       `Reserved with ${selectedProvider.firstname} ${selectedProvider.lastname} on ${selectedDate} at ${time}`
     );
+    // handleReserve();
   };
 
   if (loading) {
@@ -238,9 +276,7 @@ export const Reserve = () => {
           </div>
         </div>
       </div>
-
       <Footer />
-
       {showDatePicker && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div
@@ -272,12 +308,12 @@ export const Reserve = () => {
           </div>
         </div>
       )}
-
       {showTimePicker && (
         <TimePickerModal
           timeSlots={timeSlots}
           onTimeSelect={handleTimeSelect}
           onClose={() => setShowTimePicker(false)}
+          onReserve={handleReserve}
         />
       )}
     </>
