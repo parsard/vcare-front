@@ -22,22 +22,6 @@ const Navbar = ({ onAboutClick, onArticleClick }) => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     if (window.scrollY > 100) {
-  //       setIsSticky(true);
-  //     } else {
-  //       setIsSticky(false);
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
-
   const liStyle = "text-white text-lg cursor-pointer";
 
   return (

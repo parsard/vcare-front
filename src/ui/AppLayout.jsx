@@ -34,14 +34,14 @@ export default function AppLayout() {
 
   return (
     <>
-      <div className="flex-wrapper bg-[#EDF6F9]">
+      <div className="flex flex-col min-h-[100vh] bg-[#EDF6F9]">
         {showNavbarFooter && (
           <Navbar
             onAboutClick={scrollToWhyUs}
             onArticleClick={scrollToArticle}
           />
         )}
-        <main className="content ">
+        <main className="flex-1 ">
           <Outlet></Outlet>
           {!isArticleDetail && showNavbarFooter && (
             <>
